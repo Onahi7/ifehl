@@ -276,15 +276,11 @@ export default function Home() {
       {/* Header */}
       <header className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div>
-          <h1 className="text-gray-800 font-medium text-lg leading-tight">
-            CHRISTIAN MEDICAL AND
-            <br />
-            DENTAL ASSOCIATION
-            <br />
-            OF NIGERIA
-            <br />
-            <span className="text-base">(CMDA NIGERIA)</span>
-          </h1>
+          <img 
+            src="https://res.cloudinary.com/da5amwknx/image/upload/v1745159759/cm_metgxv.png" 
+            alt="CMDA Logo" 
+            className="h-24 w-auto" 
+          />
         </div>
         <div className="flex items-center gap-2">
           <Link href="https://facebook.com" className="p-2 hover:text-purple-700">
