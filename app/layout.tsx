@@ -9,6 +9,16 @@ export const metadata: Metadata = {
   title: "CMDA Nigeria - IFEHL 2025",
   description: "Join us for a transformative experience of practical management and learning for Christian doctors - IFEHL 2025, June 7-14th in Calabar",
   generator: 'v0.dev',
+  icons: {
+    icon: [
+      {
+        url: "https://res.cloudinary.com/da5amwknx/image/upload/v1745685701/CMDA_LOGO_SVG_bz3dhb.svg",
+        type: "image/svg+xml",
+      },
+    ],
+    shortcut: "https://res.cloudinary.com/da5amwknx/image/upload/v1745685701/CMDA_LOGO_SVG_bz3dhb.svg",
+    apple: "https://res.cloudinary.com/da5amwknx/image/upload/v1745685701/CMDA_LOGO_SVG_bz3dhb.svg",
+  },
   openGraph: {
     title: "CMDA Nigeria - IFEHL 2025 (02)",
     description: "Join us for a transformative experience of practical management and learning for Christian doctors - IFEHL 2025, June 7-14th in Calabar",
