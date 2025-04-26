@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Check, ArrowLeft } from "lucide-react"
+import { Check, ArrowLeft, MessageCircle } from "lucide-react"
 
 type SuccessPageProps = {
   registrationId: number
@@ -74,6 +74,15 @@ export default function SuccessPage({ registrationId, participantName, email, on
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="https://chat.whatsapp.com/IBx6CvdfUMdAmg59agv6Gd"
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors"
+          >
+            <MessageCircle size={16} />
+            Join WhatsApp Group
+          </a>
           <button
             onClick={onClose}
             className="flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 text-white font-medium rounded-md hover:bg-purple-700 transition-colors"
