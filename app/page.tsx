@@ -638,17 +638,12 @@ export default function Home() {
                     <option value="">Select</option>
                     <option value="preHouseOfficer">Pre House Officer</option>
                     <option value="houseOfficer">House Officer</option>
+                    <option value="Pre Nysc">Pre Nysc</option>
+                    <option value="nysc">Nysc</option>
                     <option value="medicalOfficer">Medical Officer</option>
                     <option value="residentDoctor">Resident Doctor</option>
                     <option value="consultant">Consultant</option>
-                    <option value="dentalOfficer">Dental Officer</option>
-                    <option value="dentalResident">Dental Resident</option>
-                    <option value="dentalConsultant">Dental Consultant</option>
-                    <option value="pharmacist">Pharmacist</option>
-                    <option value="nurse">Nurse</option>
-                    <option value="medicalLabScientist">Medical Lab Scientist</option>
-                    <option value="physiotherapist">Physiotherapist</option>
-                    <option value="radiographer">Radiographer</option>
+                    <option value="medicalStudent">Medical Student</option>
                     <option value="other">Other</option>
                   </select>
                 </div>
