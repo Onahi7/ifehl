@@ -308,8 +308,9 @@ export default function Home() {
         <div className="grid md:grid-cols-2 gap-8">
           {/* Left Column - Information */}
           <div>
-            <h3 className="text-2xl font-bold text-orange-500 mb-6 text-center">Meet Some of Our Facilitators</h3>
+            <h2 className="text-3xl font-bold text-gray-800 mb-6">Registration Information</h2>
 
+            {/* Registration Deadline Banner */}
             <div className="bg-orange-500 text-white text-center py-4 mb-6">
               <p className="font-bold">Registration Deadline: May 28th 2025</p>
             </div>
