@@ -279,7 +279,7 @@ export default function Home() {
           <img 
             src="https://res.cloudinary.com/da5amwknx/image/upload/v1745159759/cm_metgxv.png" 
             alt="CMDA Logo" 
-            className="h-24 w-auto" 
+            className="h-16 sm:h-20 md:h-24 w-auto object-contain" 
           />
         </div>
         <div className="flex items-center gap-2">
@@ -311,7 +311,7 @@ export default function Home() {
             <h3 className="text-2xl font-bold text-orange-500 mb-6 text-center">Meet Some of Our Facilitators</h3>
 
             <div className="bg-orange-500 text-white text-center py-4 mb-6">
-              <p className="font-bold">Registration Deadline: March 31st 2025</p>
+              <p className="font-bold">Registration Deadline: May 28th 2025</p>
             </div>
 
             <div className="space-y-4">
