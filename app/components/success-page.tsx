@@ -26,27 +26,41 @@ export default function SuccessPage({ registrationId, participantName, email, on
 
         <div className="bg-gray-50 rounded-lg p-6 mb-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Registration Details</h3>
-          
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Registration ID:</span>
-              <span className="font-semibold">{registrationId}</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-white p-4 rounded-lg border border-gray-200">
+              <h4 className="text-sm font-medium text-gray-500 mb-3">Personal Details</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Registration ID:</span>
+                  <span className="font-semibold">{registrationId}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Name:</span>
+                  <span className="font-semibold">{participantName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Email:</span>
+                  <span className="font-semibold text-right">{email}</span>
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Name:</span>
-              <span className="font-semibold">{participantName}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Email:</span>
-              <span className="font-semibold">{email}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Event Date:</span>
-              <span className="font-semibold">7-14th June, 2025</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Venue:</span>
-              <span className="font-semibold">Calabar</span>
+            
+            <div className="bg-white p-4 rounded-lg border border-gray-200">
+              <h4 className="text-sm font-medium text-gray-500 mb-3">Event Details</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Event Date:</span>
+                  <span className="font-semibold">7-14th June, 2025</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Venue:</span>
+                  <span className="font-semibold">Calabar</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Registration Fee:</span>
+                  <span className="font-semibold">₦50,000</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
