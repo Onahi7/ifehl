@@ -314,42 +314,6 @@ export default function Home() {
             <div className="bg-orange-500 text-white text-center py-4 mb-6">
               <p className="font-bold">Registration Deadline: May 28th 2025</p>
             </div>
-
-            <div className="space-y-4">
-              <p>
-                Join us for a transformative experience of practical management, good learning experience sharing, and
-                establishment of accountability networks for Christian doctors.
-              </p>
-
-              <div>
-                <p>
-                  <span className="font-semibold">Date:</span> 7-14th June, 2025
-                </p>
-                <p>
-                  <span className="font-semibold">Venue:</span> Calabar
-                </p>
-              </div>
-
-              <div>
-                <p>
-                  <span className="font-semibold">Registration Fee:</span> ₦50,000
-                </p>
-                <p>Fill the form and make payment to the:</p>
-
-                <div className="mt-2">
-                  <p>
-                    <span className="font-semibold">Account Name:</span> Christian Medical and Dental Association of
-                    Nigeria
-                  </p>
-                  <p>
-                    <span className="font-semibold">Account Number:</span> 1018239742
-                  </p>
-                  <p>
-                    <span className="font-semibold">Bank:</span> UBA
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Right Column - Event Details & Registration */}
