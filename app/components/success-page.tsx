@@ -86,23 +86,28 @@ export default function SuccessPage({ registrationId, participantName, email, on
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href="https://chat.whatsapp.com/IBx6CvdfUMdAmg59agv6Gd"
             target="_blank" 
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors w-full sm:w-auto"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors"
           >
             <MessageCircle size={16} />
             Join WhatsApp Group
           </a>
           <button
             onClick={onClose}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 text-white font-medium rounded-md hover:bg-purple-700 transition-colors w-full sm:w-auto"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 text-white font-medium rounded-md hover:bg-purple-700 transition-colors"
           >
             <ArrowLeft size={16} />
             Return to Registration
           </button>
+        </div>
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-700">
+            <strong>After payment, kindly send your payment receipt to <span className="text-purple-700">08091533339</span> on WhatsApp for confirmation.</strong>
+          </p>
         </div>
       </div>
     </div>
