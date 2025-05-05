@@ -8,6 +8,7 @@ import { fetchRegistrations, approveRegistration } from "../actions"
 type Registration = {
   id: number
   first_name: string
+  middle_name?: string
   last_name: string
   email: string
   phone: string
@@ -38,7 +39,6 @@ export default function AdminPage() {  const [registrations, setRegistrations] =
       setIsLoading(false)
     }
   }
-
   const handleApprove = async (id: number) => {
     try {
       await approveRegistration(id)
@@ -52,7 +52,7 @@ export default function AdminPage() {  const [registrations, setRegistrations] =
     const headers = ["ID", "Name", "Email", "Phone", "Status", "Registration Date"]
     const csvData = registrations.map(reg => [
       reg.id,
-      `${reg.first_name} ${reg.last_name}`,
+      `${reg.first_name}${reg.middle_name ? ` ${reg.middle_name}` : ''} ${reg.last_name}`,
       reg.email,
       reg.phone,
       reg.status,
@@ -127,11 +127,10 @@ export default function AdminPage() {  const [registrations, setRegistrations] =
           {/* Registrations Table */}
           <div className="p-6">
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
+              <table className="w-full">                <thead>
                   <tr className="border-b">
                     <th className="text-left p-3">ID</th>
-                    <th className="text-left p-3">Name</th>
+                    <th className="text-left p-3">Full Name</th>
                     <th className="text-left p-3">Email</th>
                     <th className="text-left p-3">Phone</th>
                     <th className="text-left p-3">Status</th>
@@ -148,11 +147,13 @@ export default function AdminPage() {  const [registrations, setRegistrations] =
                     <tr>
                       <td colSpan={7} className="text-center p-4">No registrations found</td>
                     </tr>
-                  ) : (
-                    registrations.map((reg) => (
-                      <tr key={reg.id} className="border-b hover:bg-gray-50">
-                        <td className="p-3">{reg.id}</td>
-                        <td className="p-3">{reg.first_name} {reg.last_name}</td>
+                  ) : (                    registrations.map((reg) => (
+                      <tr key={reg.id} className="border-b hover:bg-gray-50">                        <td className="p-3">{reg.id}</td>
+                        <td className="p-3">
+                          {reg.first_name} 
+                          {reg.middle_name ? `${reg.middle_name} ` : ''}
+                          {reg.last_name}
+                        </td>
                         <td className="p-3">{reg.email}</td>
                         <td className="p-3">{reg.phone}</td>
                         <td className="p-3">

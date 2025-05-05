@@ -27,11 +27,14 @@ export default function DetailModal({ registration, isOpen, onClose, onUpdatePay
           <div className="p-6 space-y-6">
             {/* Personal Information */}
             <div>
-              <h4 className="text-lg font-semibold mb-4">Personal Information</h4>
-              <div className="grid grid-cols-2 gap-4">
+              <h4 className="text-lg font-semibold mb-4">Personal Information</h4>              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-600">Full Name</p>
-                  <p className="font-medium">{registration.first_name} {registration.last_name}</p>
+                  <p className="font-medium">
+                    {registration.first_name} 
+                    {registration.middle_name ? `${registration.middle_name} ` : ''}
+                    {registration.last_name}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Email</p>

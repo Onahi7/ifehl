@@ -2,6 +2,7 @@
 CREATE TABLE IF NOT EXISTS registrations (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
+    middle_name VARCHAR(100),
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(255) NOT NULL,
     phone VARCHAR(20) NOT NULL,
@@ -34,6 +35,7 @@ CREATE INDEX IF NOT EXISTS idx_registrations_created_at ON registrations(created
 COMMENT ON TABLE registrations IS 'Stores registration information for CMDA Nigeria participants';
 COMMENT ON COLUMN registrations.id IS 'Unique identifier for each registration';
 COMMENT ON COLUMN registrations.first_name IS 'Participant''s first name';
+COMMENT ON COLUMN registrations.middle_name IS 'Participant''s middle name (optional)';
 COMMENT ON COLUMN registrations.last_name IS 'Participant''s last name';
 COMMENT ON COLUMN registrations.email IS 'Participant''s email address (must be unique)';
 COMMENT ON COLUMN registrations.phone IS 'Primary phone number';

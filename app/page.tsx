@@ -9,6 +9,7 @@ import SuccessPage from "@/app/components/success-page"
 
 type FormData = {
   firstName: string
+  middleName: string
   lastName: string
   email: string
   phone: string
@@ -36,9 +37,9 @@ type SubmitResult = {
   registrationId?: number
 }
 
-export default function Home() {
-  const [formData, setFormData] = useState<FormData>({
+export default function Home() {  const [formData, setFormData] = useState<FormData>({
     firstName: "",
+    middleName: "",
     lastName: "",
     email: "",
     phone: "",
@@ -188,10 +189,10 @@ export default function Home() {
     setErrors(newErrors)
     return isValid
   }
-
   const resetForm = () => {
     setFormData({
       firstName: "",
+      middleName: "",
       lastName: "",
       email: "",
       phone: "",
@@ -258,13 +259,11 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Loading Spinner */}
-      {isSubmitting && <LoadingSpinner />}
-
-      {/* Success Page */}
+      {isSubmitting && <LoadingSpinner />}      {/* Success Page */}
       {showSuccessPage && registrationId && (
         <SuccessPage 
           registrationId={registrationId}
-          participantName={`${formData.firstName} ${formData.lastName}`}
+          participantName={`${formData.firstName}${formData.middleName ? ` ${formData.middleName}` : ''} ${formData.lastName}`}
           email={formData.email}
           onClose={() => {
             setShowSuccessPage(false)
@@ -376,9 +375,7 @@ export default function Home() {
                     </p>
                   )}
                 </div>
-              )}
-
-              <form className="space-y-4" onSubmit={handleSubmit}>
+              )}              <form className="space-y-4" onSubmit={handleSubmit}>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="firstName" className="block mb-2">
@@ -402,26 +399,40 @@ export default function Home() {
                     )}
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block mb-2">
-                      Last Name <span className="text-red-500">*</span>
+                    <label htmlFor="middleName" className="block mb-2">
+                      Middle Name
                     </label>
                     <input
                       type="text"
-                      id="lastName"
-                      name="lastName"
-                      placeholder="Enter Your Last Name"
-                      className={`w-full p-2 border rounded-md ${
-                        touched.lastName && errors.lastName ? "border-red-500" : ""
-                      }`}
-                      value={formData.lastName}
+                      id="middleName"
+                      name="middleName"
+                      placeholder="Enter Your Middle Name"
+                      className="w-full p-2 border rounded-md"
+                      value={formData.middleName}
                       onChange={handleChange}
-                      onBlur={() => handleBlur("lastName")}
-                      required
                     />
-                    {touched.lastName && errors.lastName && (
-                      <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
-                    )}
                   </div>
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block mb-2">
+                    Last Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    placeholder="Enter Your Last Name"
+                    className={`w-full p-2 border rounded-md ${
+                      touched.lastName && errors.lastName ? "border-red-500" : ""
+                    }`}
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    onBlur={() => handleBlur("lastName")}
+                    required
+                  />
+                  {touched.lastName && errors.lastName && (
+                    <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+                  )}
                 </div>
 
                 <div>

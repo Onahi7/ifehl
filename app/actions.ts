@@ -8,6 +8,7 @@ import { headers } from "next/headers"
 // Type for form data
 type FormData = {
   firstName: string
+  middleName: string
   lastName: string
   email: string
   phone: string
@@ -29,12 +30,11 @@ type FormData = {
 export async function submitRegistration(formData: FormData) {
   try {
     // Initialize the Neon SQL client
-    const sql = neon(process.env.DATABASE_URL!)
-
-    // Insert the registration data into the database
+    const sql = neon(process.env.DATABASE_URL!)    // Insert the registration data into the database
     const result = await sql`
       INSERT INTO registrations (
         first_name, 
+        middle_name,
         last_name, 
         email, 
         phone, 
@@ -52,6 +52,7 @@ export async function submitRegistration(formData: FormData) {
         hear_about
       ) VALUES (
         ${formData.firstName},
+        ${formData.middleName || null},
         ${formData.lastName},
         ${formData.email},
         ${formData.phone},
@@ -102,6 +103,7 @@ export async function fetchRegistrations() {
       SELECT 
         id, 
         first_name, 
+        middle_name,
         last_name, 
         email, 
         phone, 
