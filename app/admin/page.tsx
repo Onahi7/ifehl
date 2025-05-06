@@ -89,14 +89,21 @@ export default function AdminPage() {  const [registrations, setRegistrations] =
                 Back to Registration
               </Link>
               <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+            </div>            <div className="flex items-center gap-4">
+              <Link 
+                href="/admin/full-details"
+                className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              >
+                View Full Details
+              </Link>
+              <button
+                onClick={exportToCSV}
+                className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export CSV
+              </button>
             </div>
-            <button
-              onClick={exportToCSV}
-              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Export CSV
-            </button>
           </div>
         </div>
       </header>
