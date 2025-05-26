@@ -344,7 +344,7 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
                     <MapPin size={24} />
                   </div>
                   <div>
-                    <span className="font-bold">Venue:</span> Calabar
+                    <span className="font-bold">Venue:</span> RIMAD #5 Robert Institute Street (RIMAD), Satellite Town, Calabar, Nigeria
                   </div>
                 </div>
 
@@ -357,6 +357,20 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div className="bg-yellow-50 border border-yellow-200 rounded-md p-6 mb-8">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Payment Information</h3>
+              <p className="text-sm text-yellow-700 mb-4">
+                <strong className="font-medium">Important:</strong> Please complete your registration by making a payment 
+                of ₦50,000 to validate your submission.
+              </p>
+              <p className="text-sm text-yellow-700">
+                <strong className="font-medium">Account Details:</strong><br />
+                Account Name: Christian Medical and Dental Association of Nigeria<br />
+                Account Number: 1018339742<br />
+                Bank: UBA
+              </p>
             </div>
 
             <div className="border border-gray-300 rounded-md p-6">

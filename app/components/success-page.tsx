@@ -79,7 +79,7 @@ export default function SuccessPage({ registrationId, participantName, email, on
               <p className="text-sm text-yellow-700 mt-2">
                 <strong className="font-medium">Account Details:</strong><br />
                 Account Name: Christian Medical and Dental Association of Nigeria<br />
-                Account Number: 1018239742<br />
+                Account Number: 1018339742<br />
                 Bank: UBA
               </p>
             </div>
