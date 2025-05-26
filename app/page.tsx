@@ -311,7 +311,7 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
 
             {/* Registration Deadline Banner */}
             <div className="bg-orange-500 text-white text-center py-4 mb-6">
-              <p className="font-bold">Registration Deadline: May 28th 2025</p>
+              <p className="font-bold">Registration Deadline: May 31st 2025</p>
             </div>
           </div>
 
