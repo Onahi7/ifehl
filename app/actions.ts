@@ -244,6 +244,56 @@ export async function bulkApproveRegistrations(ids: number[]) {
   }
 }
 
+// Function to track sent emails
+export async function trackEmailSent(registrationId: number, emailType: 'approval' | 'reminder') {
+  try {
+    const sql = neon(process.env.DATABASE_URL!)
+    await sql`
+      INSERT INTO email_tracking (registration_id, email_type, sent_at)
+      VALUES (${registrationId}, ${emailType}, NOW())
+    `
+    revalidatePath('/admin/full-details')
+    return { success: true }
+  } catch (error) {
+    console.error("Error tracking email:", error)
+    throw new Error("Failed to track email")
+  }
+}
+
+// Function to check if an email has been sent to a registration
+export async function checkEmailSent(registrationId: number, emailType: 'approval' | 'reminder') {
+  try {
+    const sql = neon(process.env.DATABASE_URL!)
+    const result = await sql`
+      SELECT * FROM email_tracking
+      WHERE registration_id = ${registrationId}
+      AND email_type = ${emailType}
+      ORDER BY sent_at DESC
+      LIMIT 1
+    `
+    return JSON.parse(JSON.stringify(result[0] || null))
+  } catch (error) {
+    console.error("Error checking email status:", error)
+    throw new Error("Failed to check email status")
+  }
+}
+
+// Function to get all sent emails for a registration
+export async function getSentEmails(registrationId: number) {
+  try {
+    const sql = neon(process.env.DATABASE_URL!)
+    const result = await sql`
+      SELECT * FROM email_tracking
+      WHERE registration_id = ${registrationId}
+      ORDER BY sent_at DESC
+    `
+    return JSON.parse(JSON.stringify(result))
+  } catch (error) {
+    console.error("Error fetching sent emails:", error)
+    throw new Error("Failed to fetch sent emails")
+  }
+}
+
 // Helper function to generate JWT token
 function generateToken(userId: number) {
   const jwt = require('jsonwebtoken')

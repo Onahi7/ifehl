@@ -4,6 +4,7 @@ import { Resend } from 'resend';
 import { createElement } from 'react';
 import { ApprovalEmail } from './emails/approval-email';
 import { ReminderEmail } from './emails/reminder-email';
+import { trackEmailSent } from './actions';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -18,6 +19,9 @@ export async function sendApprovalEmail(to: string, firstName: string, registrat
         registrationId,
       }),
     });
+
+    // Track that the email was sent
+    await trackEmailSent(parseInt(registrationId), 'approval');
 
     return { success: true, data };
   } catch (error) {
@@ -37,6 +41,9 @@ export async function sendReminderEmail(to: string, firstName: string, registrat
         registrationId,
       }),
     });
+
+    // Track that the email was sent
+    await trackEmailSent(parseInt(registrationId), 'reminder');
 
     return { success: true, data };
   } catch (error) {

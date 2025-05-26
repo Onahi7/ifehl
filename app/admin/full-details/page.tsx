@@ -1,9 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ArrowLeft, Eye, Mail } from "lucide-react"
+import { ArrowLeft, Eye, Mail, CheckCircle, AlertCircle } from "lucide-react"
 import Link from "next/link"
-import { fetchRegistrations, fetchRegistrationDetails } from "../../actions"
+import { 
+  fetchRegistrations, 
+  fetchRegistrationDetails, 
+  checkEmailSent 
+} from "../../actions"
 import { sendApprovalEmail, sendReminderEmail } from "@/app/email-service"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -34,6 +38,9 @@ type Registration = {
   payment_reference?: string
   payment_date?: string
   created_at: string
+  // Add email tracking info
+  approvalEmailSent?: boolean
+  reminderEmailSent?: boolean
 }
 
 export default function FullDetailsPage() {
@@ -55,7 +62,16 @@ export default function FullDetailsPage() {
       const detailedRegistrations = await Promise.all(
         basicData.map(async (reg: any) => {
           const details = await fetchRegistrationDetails(reg.id)
-          return details as Registration
+          
+          // Check if emails have been sent for this registration
+          const approvalEmail = await checkEmailSent(reg.id, 'approval')
+          const reminderEmail = await checkEmailSent(reg.id, 'reminder')
+          
+          return {
+            ...details,
+            approvalEmailSent: !!approvalEmail,
+            reminderEmailSent: !!reminderEmail
+          } as Registration
         })
       )
       
@@ -85,6 +101,15 @@ export default function FullDetailsPage() {
       )
       
       if (result.success) {
+        // Update local state to reflect that email was sent
+        setRegistrations(prevRegistrations => 
+          prevRegistrations.map(reg => 
+            reg.id === registration.id 
+              ? { ...reg, approvalEmailSent: true } 
+              : reg
+          )
+        )
+        
         toast({
           title: "Email Sent",
           description: `Approval email sent to ${registration.email}`,
@@ -116,6 +141,15 @@ export default function FullDetailsPage() {
       )
       
       if (result.success) {
+        // Update local state to reflect that email was sent
+        setRegistrations(prevRegistrations => 
+          prevRegistrations.map(reg => 
+            reg.id === registration.id 
+              ? { ...reg, reminderEmailSent: true } 
+              : reg
+          )
+        )
+        
         toast({
           title: "Email Sent",
           description: `Reminder email sent to ${registration.email}`,
@@ -277,15 +311,23 @@ export default function FullDetailsPage() {
                                 Details
                               </Link>
                             </td>
-                            <td className="p-3">
-                              <div className="flex items-center space-x-2">
+                            <td className="p-3">                              <div className="flex items-center space-x-2">
                                 <Button
-                                  variant="ghost"
+                                  variant={
+                                    (reg.status === "approved" && reg.approvalEmailSent) ||
+                                    (reg.status !== "approved" && reg.reminderEmailSent)
+                                      ? "outline"
+                                      : "ghost"
+                                  }
                                   size="sm"
                                   className={`${
                                     reg.status === "approved" 
-                                      ? "text-green-600 hover:text-green-700" 
-                                      : "text-yellow-600 hover:text-yellow-700"
+                                      ? (reg.approvalEmailSent 
+                                          ? "text-green-600 border-green-600" 
+                                          : "text-green-600 hover:text-green-700")
+                                      : (reg.reminderEmailSent 
+                                          ? "text-yellow-600 border-yellow-600" 
+                                          : "text-yellow-600 hover:text-yellow-700")
                                   }`}
                                   onClick={() => 
                                     reg.status === "approved" 
@@ -293,8 +335,15 @@ export default function FullDetailsPage() {
                                       : handleSendReminderEmail(reg)
                                   }
                                 >
-                                  <Mail className="h-4 w-4 mr-1" />
-                                  {reg.status === "approved" ? "Send Approval" : "Send Reminder"}
+                                  {(reg.status === "approved" && reg.approvalEmailSent) || 
+                                   (reg.status !== "approved" && reg.reminderEmailSent) 
+                                    ? <CheckCircle className="h-4 w-4 mr-1" /> 
+                                    : <Mail className="h-4 w-4 mr-1" />
+                                  }
+                                  {reg.status === "approved" 
+                                    ? (reg.approvalEmailSent ? "Approval Sent" : "Send Approval")
+                                    : (reg.reminderEmailSent ? "Reminder Sent" : "Send Reminder")
+                                  }
                                 </Button>
                               </div>
                             </td>
