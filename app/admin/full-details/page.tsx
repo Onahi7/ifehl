@@ -1,12 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ArrowLeft, Eye } from "lucide-react"
+import { ArrowLeft, Eye, Mail } from "lucide-react"
 import Link from "next/link"
 import { fetchRegistrations, fetchRegistrationDetails } from "../../actions"
+import { sendApprovalEmail, sendReminderEmail } from "@/app/email-service"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ExportButton from "@/app/components/export-button"
+import { toast } from "@/components/ui/use-toast"
 
 type Registration = {
   id: number
@@ -72,6 +74,68 @@ export default function FullDetailsPage() {
     if (selectedTab === "paid") return registrations.filter(r => r.payment_status === "paid")
     if (selectedTab === "unpaid") return registrations.filter(r => r.payment_status === "unpaid")
     return registrations
+  }
+
+  const handleSendApprovalEmail = async (registration: Registration) => {
+    try {
+      const result = await sendApprovalEmail(
+        registration.email,
+        registration.first_name,
+        registration.id.toString()
+      )
+      
+      if (result.success) {
+        toast({
+          title: "Email Sent",
+          description: `Approval email sent to ${registration.email}`,
+          variant: "default",
+        })
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to send approval email",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error("Error sending approval email:", error)
+      toast({
+        title: "Error",
+        description: "Failed to send approval email",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleSendReminderEmail = async (registration: Registration) => {
+    try {
+      const result = await sendReminderEmail(
+        registration.email,
+        registration.first_name,
+        registration.id.toString()
+      )
+      
+      if (result.success) {
+        toast({
+          title: "Email Sent",
+          description: `Reminder email sent to ${registration.email}`,
+          variant: "default",
+        })
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to send reminder email",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error("Error sending reminder email:", error)
+      toast({
+        title: "Error",
+        description: "Failed to send reminder email",
+        variant: "destructive",
+      })
+    }
   }
 
   return (
@@ -212,6 +276,27 @@ export default function FullDetailsPage() {
                                 <Eye className="h-5 w-5 mr-1" />
                                 Details
                               </Link>
+                            </td>
+                            <td className="p-3">
+                              <div className="flex items-center space-x-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className={`${
+                                    reg.status === "approved" 
+                                      ? "text-green-600 hover:text-green-700" 
+                                      : "text-yellow-600 hover:text-yellow-700"
+                                  }`}
+                                  onClick={() => 
+                                    reg.status === "approved" 
+                                      ? handleSendApprovalEmail(reg)
+                                      : handleSendReminderEmail(reg)
+                                  }
+                                >
+                                  <Mail className="h-4 w-4 mr-1" />
+                                  {reg.status === "approved" ? "Send Approval" : "Send Reminder"}
+                                </Button>
+                              </div>
                             </td>
                           </tr>
                         ))}
