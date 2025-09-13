@@ -4,6 +4,7 @@ import { neon } from "@neondatabase/serverless"
 import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import { headers } from "next/headers"
+import { sendConfirmationEmail } from "./email-service"
 
 // Type for form data
 type FormData = {
@@ -74,9 +75,25 @@ export async function submitRegistration(formData: FormData) {
     // Get the registration ID from the result
     const registrationId = result[0]?.id
 
+    if (registrationId) {
+      // Send confirmation email
+      const fullName = `${formData.firstName}${formData.middleName ? ` ${formData.middleName}` : ''} ${formData.lastName}`;
+      try {
+        await sendConfirmationEmail(
+          formData.email,
+          formData.firstName,
+          registrationId.toString(),
+          fullName
+        );
+      } catch (emailError) {
+        console.error("Error sending confirmation email:", emailError);
+        // Don't fail the registration if email fails
+      }
+    }
+
     const response = {
       success: true,
-      message: "Registration submitted successfully!",
+      message: "Registration submitted successfully! Please check your email for confirmation.",
       registrationId: Number(registrationId) || null,
     }
     return JSON.parse(JSON.stringify(response))
@@ -245,7 +262,7 @@ export async function bulkApproveRegistrations(ids: number[]) {
 }
 
 // Function to track sent emails
-export async function trackEmailSent(registrationId: number, emailType: 'approval' | 'reminder') {
+export async function trackEmailSent(registrationId: number, emailType: 'approval' | 'reminder' | 'confirmation') {
   try {
     const sql = neon(process.env.DATABASE_URL!)
     await sql`
@@ -261,7 +278,7 @@ export async function trackEmailSent(registrationId: number, emailType: 'approva
 }
 
 // Function to check if an email has been sent to a registration
-export async function checkEmailSent(registrationId: number, emailType: 'approval' | 'reminder') {
+export async function checkEmailSent(registrationId: number, emailType: 'approval' | 'reminder' | 'confirmation') {
   try {
     const sql = neon(process.env.DATABASE_URL!)
     const result = await sql`
