@@ -299,7 +299,7 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
 
       {/* Banner */}
       <div className="bg-gradient-to-r from-gray-500 via-purple-800 to-green-800 text-white py-10 text-center">
-        <h2 className="text-3xl font-bold">IFEHL 2025 (02)</h2>
+        <h2 className="text-3xl font-bold">IFEHL 2025 (03)</h2>
       </div>
 
       {/* Main Content */}
@@ -311,7 +311,7 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
 
             {/* Registration Deadline Banner */}
             <div className="bg-orange-500 text-white text-center py-4 mb-6">
-              <p className="font-bold">Registration Deadline: May 31st 2025</p>
+              <p className="font-bold">Registration Deadline: November 2025</p>
             </div>
           </div>
 
@@ -326,7 +326,7 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
                     <Calendar size={24} />
                   </div>
                   <div>
-                    <span className="font-bold">Date:</span> 7-14th June, 2025
+                    <span className="font-bold">Date:</span> November, 2025
                   </div>
                 </div>
 
@@ -344,7 +344,7 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
                     <MapPin size={24} />
                   </div>
                   <div>
-                    <span className="font-bold">Venue:</span> RIMAD #5 Robert Institute Street (RIMAD), Satellite Town, Calabar, Nigeria
+                    <span className="font-bold">Venue:</span> Wholeness House, Gwagalada, Abuja
                   </div>
                 </div>
 
