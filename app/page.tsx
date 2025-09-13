@@ -311,7 +311,7 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
 
             {/* Registration Deadline Banner */}
             <div className="bg-orange-500 text-white text-center py-4 mb-6">
-              <p className="font-bold">Registration Deadline: November 2025</p>
+              <p className="font-bold">Registration Deadline: November 9th, 2025</p>
             </div>
           </div>
 
@@ -326,7 +326,7 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
                     <Calendar size={24} />
                   </div>
                   <div>
-                    <span className="font-bold">Date:</span> November, 2025
+                    <span className="font-bold">Date:</span> 16-23rd November, 2025
                   </div>
                 </div>
 

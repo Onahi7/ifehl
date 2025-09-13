@@ -17,7 +17,7 @@ export async function sendConfirmationEmail(
 ) {
   try {
     const data = await resend.emails.send({
-      from: `CMDA <${process.env.RESEND_FROM_EMAIL}>`,
+      from: `CMDA-IFEHL <${process.env.RESEND_FROM_EMAIL}>`,
       to: [to],
       subject: 'Registration Confirmation - IFEHL 2025',
       react: createElement(ConfirmationEmail, {
@@ -41,7 +41,7 @@ export async function sendConfirmationEmail(
 export async function sendApprovalEmail(to: string, firstName: string, registrationId: string) {
   try {
     const data = await resend.emails.send({
-      from: `CMDA <${process.env.RESEND_FROM_EMAIL}>`,
+      from: `CMDA-IFEHL <${process.env.RESEND_FROM_EMAIL}>`,
       to: [to],
       subject: 'Registration Approved - IFEHL 2025',
       react: createElement(ApprovalEmail, {
@@ -63,7 +63,7 @@ export async function sendApprovalEmail(to: string, firstName: string, registrat
 export async function sendReminderEmail(to: string, firstName: string, registrationId: string) {
   try {
     const data = await resend.emails.send({
-      from: `CMDA <${process.env.RESEND_FROM_EMAIL}>`,
+      from: `CMDA-IFEHL <${process.env.RESEND_FROM_EMAIL}>`,
       to: [to],
       subject: 'Registration Reminder - IFEHL 2025',
       react: createElement(ReminderEmail, {

@@ -28,6 +28,16 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
       textAlign: 'center',
       borderRadius: '8px 8px 0 0'
     }}>
+      <img 
+        src="https://res.cloudinary.com/da5amwknx/image/upload/v1745159759/cm_metgxv.png" 
+        alt="CMDA Logo" 
+        style={{ 
+          height: '60px', 
+          width: 'auto', 
+          margin: '0 auto 15px auto', 
+          display: 'block' 
+        }} 
+      />
       <h1 style={{ margin: '0', fontSize: '28px' }}>IFEHL 2025</h1>
       <p style={{ margin: '10px 0 0 0', fontSize: '16px', opacity: '0.9' }}>
         Christian Medical and Dental Association of Nigeria
@@ -127,7 +137,7 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
         </h3>
         <div style={{ color: '#78350f', lineHeight: '1.8' }}>
           <p style={{ margin: '5px 0' }}>
-            <strong>📅 Date:</strong> November, 2025
+            <strong>📅 Date:</strong> 16-23rd November, 2025
           </p>
           <p style={{ margin: '5px 0' }}>
             <strong>📍 Venue:</strong> Wholeness House, Gwagalada, Abuja
