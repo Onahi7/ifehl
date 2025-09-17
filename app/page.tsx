@@ -276,8 +276,8 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
       <header className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div>
           <img 
-            src="https://res.cloudinary.com/da5amwknx/image/upload/v1745159759/cm_metgxv.png" 
-            alt="CMDA Logo" 
+            src="/IfHEL. Logo.png" 
+            alt="IFEHL Logo" 
             className="h-16 sm:h-20 md:h-24 w-auto object-contain" 
           />
         </div>
@@ -311,7 +311,7 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
 
             {/* Registration Deadline Banner */}
             <div className="bg-orange-500 text-white text-center py-4 mb-6">
-              <p className="font-bold">Registration Deadline: November 9th, 2025</p>
+              <p className="font-bold">Registration Deadline: October 31st, 2025</p>
             </div>
           </div>
 
@@ -332,7 +332,7 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
 
                 <div className="flex items-center gap-4">
                   <div className="text-purple-800">
-                    <DollarSign size={24} />
+                    <span className="text-2xl font-bold">₦</span>
                   </div>
                   <div>
                     <span className="font-bold">Registration:</span> ₦50,000
@@ -365,12 +365,17 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
                 <strong className="font-medium">Important:</strong> Please complete your registration by making a payment 
                 of ₦50,000 to validate your submission.
               </p>
-              <p className="text-sm text-yellow-700">
+              <p className="text-sm text-yellow-700 mb-4">
                 <strong className="font-medium">Account Details:</strong><br />
                 Account Name: Christian Medical and Dental Association of Nigeria<br />
                 Account Number: 1018339742<br />
                 Bank: UBA
               </p>
+              <div className="bg-red-50 border border-red-300 rounded-md p-4 mt-4">
+                <p className="text-sm text-red-700 font-medium">
+                  <strong>Transfer Instruction:</strong> Add "IFEHL 2025(03)" to the narration when making transfer for registration.
+                </p>
+              </div>
             </div>
 
             <div className="border border-gray-300 rounded-md p-6">
@@ -601,13 +606,13 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
 
                 <div>
                   <label htmlFor="institute" className="block mb-2">
-                    Institute of Undergraduate Training
+                    Institution of Undergraduate Training
                   </label>
                   <input
                     type="text"
                     id="institute"
                     name="institute"
-                    placeholder="Enter your institute"
+                    placeholder="Enter your institution"
                     className="w-full p-2 border rounded-md"
                     value={formData.institute}
                     onChange={handleChange}

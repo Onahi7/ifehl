@@ -29,8 +29,8 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
       borderRadius: '8px 8px 0 0'
     }}>
       <img 
-        src="https://res.cloudinary.com/da5amwknx/image/upload/v1745159759/cm_metgxv.png" 
-        alt="CMDA Logo" 
+        src="/IfHEL. Logo.png" 
+        alt="IFEHL Logo" 
         style={{ 
           height: '60px', 
           width: 'auto', 

@@ -6,28 +6,35 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "CMDA Nigeria - IFEHL 2025",
-  description: "Join us for a transformative experience of practical management and learning for Christian doctors - IFEHL 2025, June 7-14th in Calabar",
-  generator: 'v0.dev',
+  title: "IFEHL 2025 (03) - Christian Medical Leadership Training",
+  description: "Join us for a transformative experience of practical management and learning for Christian doctors - IFEHL 2025, November 16-23rd at Wholeness House, Gwagalada, Abuja",
+  generator: 'Next.js',
+  keywords: ["IFEHL", "CMDA Nigeria", "Christian medical", "leadership training", "medical conference", "Abuja 2025"],
+  authors: [{ name: "CMDA Nigeria" }],
+  creator: "CMDA Nigeria",
+  publisher: "CMDA Nigeria",
   icons: {
     icon: [
       {
-        url: "https://res.cloudinary.com/da5amwknx/image/upload/v1745685701/CMDA_LOGO_SVG_bz3dhb.svg",
-        type: "image/svg+xml",
+        url: "/IfHEL. Logo.png",
+        type: "image/png",
       },
     ],
-    shortcut: "https://res.cloudinary.com/da5amwknx/image/upload/v1745685701/CMDA_LOGO_SVG_bz3dhb.svg",
-    apple: "https://res.cloudinary.com/da5amwknx/image/upload/v1745685701/CMDA_LOGO_SVG_bz3dhb.svg",
+    shortcut: "/IfHEL. Logo.png",
+    apple: "/IfHEL. Logo.png",
   },
+  metadataBase: new URL('https://ifehl.cmdanigeria.org'), // Replace with your actual domain
   openGraph: {
-    title: "CMDA Nigeria - IFEHL 2025 (02)",
-    description: "Join us for a transformative experience of practical management and learning for Christian doctors - IFEHL 2025, June 7-14th in Calabar",
+    title: "IFEHL 2025 (03) - Christian Medical Leadership Training",
+    description: "Join us for a transformative experience of practical management and learning for Christian doctors - IFEHL 2025, November 16-23rd at Wholeness House, Gwagalada, Abuja",
+    url: 'https://ifehl.cmdanigeria.org',
+    siteName: 'IFEHL 2025',
     images: [
       {
-        url: "https://res.cloudinary.com/da5amwknx/image/upload/v1745685247/Blue_and_Yellow_Modern_Corporate_Logowqweewerwerew_vjhx6s.png",
+        url: "/IfHEL. Logo.png",
         width: 1200,
         height: 630,
-        alt: "IFEHL 2025 Banner"
+        alt: "IFEHL 2025 (03) - Christian Medical Leadership Training"
       }
     ],
     locale: "en_US",
@@ -35,10 +42,22 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "CMDA Nigeria - IFEHL 2025 (02)",
-    description: "Join us for a transformative experience of practical management and learning for Christian doctors - IFEHL 2025, June 7-14th in Calabar",
-    images: ["https://res.cloudinary.com/da5amwknx/image/upload/v1745685247/Blue_and_Yellow_Modern_Corporate_Logowqweewerwerew_vjhx6s.png"],
-  }
+    title: "IFEHL 2025 (03) - Christian Medical Leadership Training",
+    description: "Join us for a transformative experience of practical management and learning for Christian doctors - IFEHL 2025, November 16-23rd at Wholeness House, Gwagalada, Abuja",
+    images: ["/IfHEL. Logo.png"],
+    creator: "@cmdanigeria",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 }
 
 export default function RootLayout({
