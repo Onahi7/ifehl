@@ -38,7 +38,7 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
           display: 'block' 
         }} 
       />
-      <h1 style={{ margin: '0', fontSize: '28px' }}>IFEHL 2025</h1>
+      <h1 style={{ margin: '0', fontSize: '28px' }}>IFEHL 2025 (03)</h1>
       <p style={{ margin: '10px 0 0 0', fontSize: '16px', opacity: '0.9' }}>
         Christian Medical and Dental Association of Nigeria
       </p>
@@ -81,7 +81,7 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
       </h2>
 
       <p style={{ color: '#4b5563', lineHeight: '1.6', marginBottom: '20px' }}>
-        Thank you for registering for <strong>IFEHL 2025</strong>! We have successfully received your registration 
+        Thank you for registering for <strong>IFEHL 2025 (03)</strong>! We have successfully received your registration 
         and you should receive this confirmation email as proof of your submission.
       </p>
 
@@ -189,6 +189,14 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
           color: '#991b1b', 
           fontSize: '14px', 
           marginTop: '15px',
+          fontWeight: 'bold'
+        }}>
+          ⚠️ Transfer Instruction: Add "IFEHL 2025(03)" to the narration when making transfer for registration.
+        </p>
+        <p style={{ 
+          color: '#991b1b', 
+          fontSize: '14px', 
+          marginTop: '10px',
           fontStyle: 'italic' 
         }}>
           Please use your Registration ID ({registrationId}) as the payment reference.
@@ -225,7 +233,7 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
       </p>
 
       <p style={{ color: '#4b5563', lineHeight: '1.6' }}>
-        We look forward to seeing you at IFEHL 2025!
+        We look forward to seeing you at IFEHL 2025 (03)!
       </p>
 
       <div style={{ 
@@ -256,7 +264,7 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
         Christian Medical and Dental Association of Nigeria
       </p>
       <p style={{ margin: '0' }}>
-        This email was sent to {email} regarding your IFEHL 2025 registration.
+        This email was sent to {email} regarding your IFEHL 2025 (03) registration.
       </p>
     </div>
   </div>
