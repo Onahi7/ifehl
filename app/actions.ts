@@ -311,32 +311,41 @@ export async function getSentEmails(registrationId: number) {
   }
 }
 
-// Optimized function to fetch all registrations with full details and email tracking in a single query
+// Optimized function to fetch all registrations with full details and email tracking
 export async function fetchAllRegistrationsWithDetails() {
   try {
     const sql = neon(process.env.DATABASE_URL!)
-    const result = await sql`
-      SELECT 
-        r.*,
-        CASE WHEN et_approval.id IS NOT NULL THEN true ELSE false END as approval_email_sent,
-        CASE WHEN et_reminder.id IS NOT NULL THEN true ELSE false END as reminder_email_sent
-      FROM registrations r
-      LEFT JOIN (
-        SELECT DISTINCT ON (registration_id) 
-          id, registration_id 
-        FROM email_tracking 
-        WHERE email_type = 'approval'
-        ORDER BY registration_id, sent_at DESC
-      ) et_approval ON r.id = et_approval.registration_id
-      LEFT JOIN (
-        SELECT DISTINCT ON (registration_id) 
-          id, registration_id 
-        FROM email_tracking 
-        WHERE email_type = 'reminder'
-        ORDER BY registration_id, sent_at DESC
-      ) et_reminder ON r.id = et_reminder.registration_id
-      ORDER BY r.created_at DESC
+    
+    // Fetch all registrations
+    const registrations = await sql`
+      SELECT * FROM registrations 
+      ORDER BY created_at DESC
     `
+    
+    // Fetch all email tracking records
+    const emailTracking = await sql`
+      SELECT 
+        registration_id,
+        email_type,
+        MAX(sent_at) as last_sent_at
+      FROM email_tracking
+      GROUP BY registration_id, email_type
+    `
+    
+    // Create a map for quick lookup
+    const emailMap = new Map()
+    emailTracking.forEach((track: any) => {
+      const key = `${track.registration_id}_${track.email_type}`
+      emailMap.set(key, true)
+    })
+    
+    // Combine the data
+    const result = registrations.map((reg: any) => ({
+      ...reg,
+      approval_email_sent: emailMap.has(`${reg.id}_approval`) || false,
+      reminder_email_sent: emailMap.has(`${reg.id}_reminder`) || false,
+    }))
+    
     return JSON.parse(JSON.stringify(result))
   } catch (error) {
     console.error("Error fetching all registrations with details:", error)
