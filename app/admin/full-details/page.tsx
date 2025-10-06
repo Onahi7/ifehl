@@ -4,9 +4,7 @@ import { useEffect, useState } from "react"
 import { ArrowLeft, Eye, Mail, CheckCircle, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { 
-  fetchRegistrations, 
-  fetchRegistrationDetails, 
-  checkEmailSent 
+  fetchAllRegistrationsWithDetails
 } from "../../actions"
 import { sendApprovalEmail, sendReminderEmail } from "@/app/email-service"
 import { Button } from "@/components/ui/button"
@@ -55,27 +53,17 @@ export default function FullDetailsPage() {
   const loadRegistrations = async () => {
     try {
       setIsLoading(true)
-      // First fetch basic registration data
-      const basicData = await fetchRegistrations()
+      // Fetch all registrations with full details and email tracking in a single optimized query
+      const detailedRegistrations = await fetchAllRegistrationsWithDetails()
       
-      // For each registration, fetch full details
-      const detailedRegistrations = await Promise.all(
-        basicData.map(async (reg: any) => {
-          const details = await fetchRegistrationDetails(reg.id)
-          
-          // Check if emails have been sent for this registration
-          const approvalEmail = await checkEmailSent(reg.id, 'approval')
-          const reminderEmail = await checkEmailSent(reg.id, 'reminder')
-          
-          return {
-            ...details,
-            approvalEmailSent: !!approvalEmail,
-            reminderEmailSent: !!reminderEmail
-          } as Registration
-        })
-      )
+      // Map the database field names to match the component's expected format
+      const mappedRegistrations = detailedRegistrations.map((reg: any) => ({
+        ...reg,
+        approvalEmailSent: reg.approval_email_sent,
+        reminderEmailSent: reg.reminder_email_sent
+      })) as Registration[]
       
-      setRegistrations(detailedRegistrations)
+      setRegistrations(mappedRegistrations)
     } catch (error) {
       console.error("Error loading registrations:", error)
     } finally {

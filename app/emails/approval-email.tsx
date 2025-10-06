@@ -16,6 +16,21 @@ export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
     margin: '0 auto',
     padding: '20px',
   }}>
+    {/* Logo Header */}
+    <div style={{
+      textAlign: 'center' as const,
+      marginBottom: '20px',
+    }}>
+      <img 
+        src="https://ifehl.cmdanigeria.org/IfHEL.%20Logo.png" 
+        alt="IFEHL Logo" 
+        style={{
+          maxWidth: '150px',
+          height: 'auto',
+        }}
+      />
+    </div>
+
     <div style={{
       backgroundColor: '#6633cc',
       padding: '20px',
@@ -28,7 +43,7 @@ export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
         fontSize: '24px',
         fontWeight: 'bold',
       }}>
-        Registration Approved - IFEHL(02) 2025
+        Registration Approved - IFEHL 2025 (03)
       </h1>
     </div>
     
@@ -44,7 +59,7 @@ export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
       </p>
       
       <p style={{ fontSize: '16px', lineHeight: '1.5', marginBottom: '20px' }}>
-        We are pleased to inform you that your registration (ID: <span style={{ fontWeight: 'bold', color: '#6633cc' }}>{registrationId}</span>) for IFEHL 2025 has been approved.
+        We are pleased to inform you that your registration (ID: <span style={{ fontWeight: 'bold', color: '#6633cc' }}>{registrationId}</span>) for IFEHL 2025 (03) has been approved.
       </p>
       
       <div style={{
@@ -58,23 +73,80 @@ export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
         </h2>
         
         <div style={{ display: 'flex', marginBottom: '10px' }}>
-          <div style={{ minWidth: '100px', fontWeight: 'bold' }}>Date:</div>
-          <div>7-14th June, 2025</div>
+          <div style={{ minWidth: '120px', fontWeight: 'bold' }}>Date:</div>
+          <div>16-23rd November, 2025</div>
         </div>
         
         <div style={{ display: 'flex', marginBottom: '10px' }}>
-          <div style={{ minWidth: '100px', fontWeight: 'bold' }}>Venue:</div>
-          <div>RIMAD #5 Robert Institute Street (RIMAD), Satellite Town, Calabar, Nigeria</div>
+          <div style={{ minWidth: '120px', fontWeight: 'bold' }}>Venue:</div>
+          <div>Wholeness House, Gwagalada, Abuja</div>
+        </div>
+
+        <div style={{ display: 'flex', marginBottom: '10px' }}>
+          <div style={{ minWidth: '120px', fontWeight: 'bold' }}>Registration Fee:</div>
+          <div>₦50,000</div>
+        </div>
+      </div>
+
+      <div style={{
+        backgroundColor: '#fff3cd',
+        border: '2px solid #ffc107',
+        padding: '20px',
+        borderRadius: '8px',
+        marginBottom: '20px',
+      }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginTop: '0', color: '#856404' }}>
+          💳 Payment Information
+        </h2>
+        
+        <div style={{ marginBottom: '15px' }}>
+          <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>Bank Details:</div>
+          <div style={{ lineHeight: '1.8' }}>
+            <strong>Bank:</strong> UBA<br />
+            <strong>Account Number:</strong> 1018339742<br />
+            <strong>Account Name:</strong> Christian Medical and Dental Association of Nigeria
+          </div>
+        </div>
+
+        <div style={{
+          backgroundColor: '#ffffff',
+          border: '2px solid #dc3545',
+          padding: '15px',
+          borderRadius: '6px',
+          marginTop: '15px',
+        }}>
+          <div style={{ fontWeight: 'bold', color: '#dc3545', marginBottom: '5px', fontSize: '16px' }}>
+            ⚠️ IMPORTANT: Transfer Narration
+          </div>
+          <div style={{ fontSize: '14px', lineHeight: '1.6' }}>
+            When making your transfer, please add <strong style={{ color: '#dc3545' }}>"IFEHL 2025(03)"</strong> to your transfer narration/description to help us identify your payment quickly.
+          </div>
+        </div>
+
+        <div style={{
+          backgroundColor: '#f8d7da',
+          border: '2px solid #dc3545',
+          padding: '15px',
+          borderRadius: '6px',
+          marginTop: '15px',
+          textAlign: 'center' as const,
+        }}>
+          <div style={{ fontWeight: 'bold', color: '#721c24', fontSize: '16px' }}>
+            ⏰ PAYMENT DEADLINE: October 31st, 2025
+          </div>
+          <div style={{ color: '#721c24', marginTop: '5px', fontSize: '14px' }}>
+            Last Day of Collection - Please complete your payment before this date
+          </div>
         </div>
       </div>
       
       <p style={{ fontSize: '16px', lineHeight: '1.5', marginBottom: '20px' }}>
-        We look forward to seeing you at the event. If you have any questions, please don't hesitate to contact us.
+        We look forward to seeing you at the event. Please ensure you complete your payment by <strong>October 31st, 2025</strong>. If you have any questions, please don't hesitate to contact us at <strong>08091533339</strong>.
       </p>
       
       <p style={{ fontSize: '16px', lineHeight: '1.5', marginBottom: '0' }}>
         Best regards,<br />
-        <span style={{ fontWeight: 'bold' }}>CMDA Team</span>
+        <span style={{ fontWeight: 'bold' }}>CMDA-IFEHL Team</span>
       </p>
     </div>
     
