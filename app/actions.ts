@@ -353,6 +353,64 @@ export async function fetchAllRegistrationsWithDetails() {
   }
 }
 
+// Function to check if registration is open
+export async function isRegistrationOpen() {
+  try {
+    const sql = neon(process.env.DATABASE_URL!)
+    const result = await sql`
+      SELECT registration_open, close_reason 
+      FROM registration_settings 
+      ORDER BY id DESC 
+      LIMIT 1
+    `
+    
+    if (result.length === 0) {
+      // If no settings exist, default to open
+      return { 
+        isOpen: true, 
+        closeReason: 'Registration has closed as we have met the target number of participants.' 
+      }
+    }
+    
+    return {
+      isOpen: result[0].registration_open,
+      closeReason: result[0].close_reason
+    }
+  } catch (error) {
+    console.error("Error checking registration status:", error)
+    // Default to open on error
+    return { 
+      isOpen: true, 
+      closeReason: 'Registration has closed as we have met the target number of participants.' 
+    }
+  }
+}
+
+// Function to toggle registration status
+export async function toggleRegistrationStatus(shouldOpen: boolean) {
+  try {
+    const sql = neon(process.env.DATABASE_URL!)
+    
+    // Update or insert the setting
+    await sql`
+      INSERT INTO registration_settings (id, registration_open, updated_at)
+      VALUES (1, ${shouldOpen}, NOW())
+      ON CONFLICT (id) 
+      DO UPDATE SET 
+        registration_open = ${shouldOpen},
+        updated_at = NOW()
+    `
+    
+    revalidatePath('/')
+    revalidatePath('/admin')
+    
+    return { success: true }
+  } catch (error) {
+    console.error("Error toggling registration status:", error)
+    throw new Error("Failed to toggle registration status")
+  }
+}
+
 // Helper function to generate JWT token
 function generateToken(userId: number) {
   const jwt = require('jsonwebtoken')

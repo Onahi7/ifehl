@@ -1,9 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ArrowLeft, Download, Check, X, Eye } from "lucide-react"
+import { ArrowLeft, Download, Check, X, Eye, Lock, Unlock } from "lucide-react"
 import Link from "next/link"
-import { fetchRegistrations, approveRegistration } from "../actions"
+import { fetchRegistrations, approveRegistration, isRegistrationOpen, toggleRegistrationStatus } from "../actions"
 
 type Registration = {
   id: number
@@ -24,9 +24,12 @@ export default function AdminPage() {  const [registrations, setRegistrations] =
   const [paymentFilter, setPaymentFilter] = useState<string>("all")
   const [selectedIds, setSelectedIds] = useState<number[]>([])
   const [showDetailModal, setShowDetailModal] = useState(false)
+  const [registrationOpen, setRegistrationOpen] = useState(true)
+  const [isTogglingRegistration, setIsTogglingRegistration] = useState(false)
 
   useEffect(() => {
     loadRegistrations()
+    checkRegistrationStatus()
   }, [])
 
   const loadRegistrations = async () => {
@@ -37,6 +40,30 @@ export default function AdminPage() {  const [registrations, setRegistrations] =
       console.error("Error loading registrations:", error)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const checkRegistrationStatus = async () => {
+    try {
+      const status = await isRegistrationOpen()
+      setRegistrationOpen(status.isOpen)
+    } catch (error) {
+      console.error("Error checking registration status:", error)
+    }
+  }
+
+  const handleToggleRegistration = async () => {
+    try {
+      setIsTogglingRegistration(true)
+      const newStatus = !registrationOpen
+      await toggleRegistrationStatus(newStatus)
+      setRegistrationOpen(newStatus)
+      alert(newStatus ? "Registration is now OPEN" : "Registration is now CLOSED")
+    } catch (error) {
+      console.error("Error toggling registration:", error)
+      alert("Failed to toggle registration status")
+    } finally {
+      setIsTogglingRegistration(false)
     }
   }
   const handleApprove = async (id: number) => {
@@ -90,6 +117,28 @@ export default function AdminPage() {  const [registrations, setRegistrations] =
               </Link>
               <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
             </div>            <div className="flex items-center gap-4">
+              <button
+                onClick={handleToggleRegistration}
+                disabled={isTogglingRegistration}
+                className={`flex items-center px-4 py-2 rounded-md font-semibold transition-colors ${
+                  registrationOpen 
+                    ? 'bg-red-600 text-white hover:bg-red-700' 
+                    : 'bg-green-600 text-white hover:bg-green-700'
+                } disabled:opacity-50 disabled:cursor-not-allowed`}
+                title={registrationOpen ? "Click to close registration" : "Click to open registration"}
+              >
+                {registrationOpen ? (
+                  <>
+                    <Lock className="h-4 w-4 mr-2" />
+                    Close Registration
+                  </>
+                ) : (
+                  <>
+                    <Unlock className="h-4 w-4 mr-2" />
+                    Open Registration
+                  </>
+                )}
+              </button>
               <Link 
                 href="/admin/full-details"
                 className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
@@ -111,6 +160,27 @@ export default function AdminPage() {  const [registrations, setRegistrations] =
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow">
+          {/* Registration Status Banner */}
+          <div className="p-4 border-b">
+            <div className={`p-4 rounded-lg text-center font-semibold ${
+              registrationOpen 
+                ? 'bg-green-100 text-green-800 border-2 border-green-300' 
+                : 'bg-red-100 text-red-800 border-2 border-red-300'
+            }`}>
+              {registrationOpen ? (
+                <span className="flex items-center justify-center">
+                  <Unlock className="h-5 w-5 mr-2" />
+                  Registration is currently OPEN
+                </span>
+              ) : (
+                <span className="flex items-center justify-center">
+                  <Lock className="h-5 w-5 mr-2" />
+                  Registration is currently CLOSED - Target number met
+                </span>
+              )}
+            </div>
+          </div>
+
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 border-b">
             <div className="bg-purple-50 p-4 rounded-lg">

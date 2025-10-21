@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, type FormEvent, type ChangeEvent } from "react"
+import { useState, useEffect, type FormEvent, type ChangeEvent } from "react"
 import Link from "next/link"
-import { Facebook, Twitter, Instagram, Youtube, Calendar, DollarSign, MapPin, Phone } from "lucide-react"
-import { submitRegistration } from "./actions"
+import { Facebook, Twitter, Instagram, Youtube, Calendar, DollarSign, MapPin, Phone, Lock } from "lucide-react"
+import { submitRegistration, isRegistrationOpen } from "./actions"
 import LoadingSpinner from "@/app/components/loading-spinner"
 import SuccessPage from "@/app/components/success-page"
 
@@ -63,6 +63,27 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
   const [submitResult, setSubmitResult] = useState<SubmitResult | null>(null)
   const [showSuccessPage, setShowSuccessPage] = useState(false)
   const [registrationId, setRegistrationId] = useState<number | undefined>(undefined)
+  const [registrationOpen, setRegistrationOpen] = useState(true)
+  const [closeReason, setCloseReason] = useState("Registration has closed as we have met the target number of participants.")
+  const [isCheckingStatus, setIsCheckingStatus] = useState(true)
+
+  useEffect(() => {
+    checkRegistrationStatus()
+  }, [])
+
+  const checkRegistrationStatus = async () => {
+    try {
+      const status = await isRegistrationOpen()
+      setRegistrationOpen(status.isOpen)
+      setCloseReason(status.closeReason)
+    } catch (error) {
+      console.error("Error checking registration status:", error)
+      // Default to open on error
+      setRegistrationOpen(true)
+    } finally {
+      setIsCheckingStatus(false)
+    }
+  }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -304,15 +325,32 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
+        {/* Registration Closed Banner */}
+        {!registrationOpen && (
+          <div className="bg-red-600 text-white p-8 rounded-lg mb-8 text-center shadow-lg">
+            <div className="flex items-center justify-center mb-4">
+              <Lock className="h-12 w-12" />
+            </div>
+            <h2 className="text-3xl font-bold mb-4">Registration Closed</h2>
+            <p className="text-xl mb-2">{closeReason}</p>
+            <p className="text-lg">Thank you for your interest in IFEHL 2025 (03)</p>
+            <div className="mt-6">
+              <p className="text-sm">For inquiries, please contact us at <strong>08091533339</strong></p>
+            </div>
+          </div>
+        )}
+
         <div className="grid md:grid-cols-2 gap-8">
           {/* Left Column - Information */}
           <div>
             <h2 className="text-3xl font-bold text-gray-800 mb-6">Registration Information</h2>
 
             {/* Registration Deadline Banner */}
-            <div className="bg-orange-500 text-white text-center py-4 mb-6">
-              <p className="font-bold">Registration Deadline: October 31st, 2025</p>
-            </div>
+            {registrationOpen && (
+              <div className="bg-orange-500 text-white text-center py-4 mb-6">
+                <p className="font-bold">Registration Deadline: October 31st, 2025</p>
+              </div>
+            )}
           </div>
 
           {/* Right Column - Event Details & Registration */}
@@ -378,23 +416,26 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
               </div>
             </div>
 
-            <div className="border border-gray-300 rounded-md p-6">
-              <h3 className="text-3xl font-bold text-gray-800 mb-6">Register Here</h3>
+            {registrationOpen ? (
+              <div className="border border-gray-300 rounded-md p-6">
+                <h3 className="text-3xl font-bold text-gray-800 mb-6">Register Here</h3>
 
-              {submitResult && (
-                <div
-                  className={`mb-6 p-4 rounded-md ${
-                    submitResult.success ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  <p className="font-medium">{submitResult.message}</p>
-                  {submitResult.success && submitResult.registrationId && (
-                    <p className="mt-2">
-                      Your registration ID: <span className="font-bold">{submitResult.registrationId}</span>
-                    </p>
-                  )}
-                </div>
-              )}              <form className="space-y-4" onSubmit={handleSubmit}>
+                {submitResult && (
+                  <div
+                    className={`mb-6 p-4 rounded-md ${
+                      submitResult.success ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    <p className="font-medium">{submitResult.message}</p>
+                    {submitResult.success && submitResult.registrationId && (
+                      <p className="mt-2">
+                        Your registration ID: <span className="font-bold">{submitResult.registrationId}</span>
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                <form className="space-y-4" onSubmit={handleSubmit}>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="firstName" className="block mb-2">
@@ -735,6 +776,16 @@ export default function Home() {  const [formData, setFormData] = useState<FormD
                 </div>
               </form>
             </div>
+            ) : (
+              <div className="border border-gray-300 rounded-md p-8 text-center bg-gray-50">
+                <Lock className="h-16 w-16 mx-auto mb-4 text-red-600" />
+                <h3 className="text-2xl font-bold text-gray-800 mb-4">Registration Form Unavailable</h3>
+                <p className="text-gray-600 mb-2">{closeReason}</p>
+                <p className="text-sm text-gray-500 mt-4">
+                  For more information, contact: <strong>08091533339</strong>
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </main>
