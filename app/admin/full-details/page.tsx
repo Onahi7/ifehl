@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ArrowLeft, Eye, Mail, CheckCircle, AlertCircle } from "lucide-react"
+import { Eye, Mail, CheckCircle, Search } from "lucide-react"
 import Link from "next/link"
 import { 
   fetchAllRegistrationsWithDetails
@@ -10,6 +10,7 @@ import { sendApprovalEmail, sendReminderEmail } from "@/app/email-service"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ExportButton from "@/app/components/export-button"
+import PaginationControls from "@/app/components/pagination-controls"
 import { toast } from "@/components/ui/use-toast"
 
 type Registration = {
@@ -45,6 +46,9 @@ export default function FullDetailsPage() {
   const [registrations, setRegistrations] = useState<Registration[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedTab, setSelectedTab] = useState("all")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
 
   useEffect(() => {
     loadRegistrations()
@@ -72,13 +76,32 @@ export default function FullDetailsPage() {
   }
 
   const filteredRegistrations = () => {
-    if (selectedTab === "all") return registrations
-    if (selectedTab === "approved") return registrations.filter(r => r.status === "approved")
-    if (selectedTab === "pending") return registrations.filter(r => r.status === "pending")
-    if (selectedTab === "paid") return registrations.filter(r => r.payment_status === "paid")
-    if (selectedTab === "unpaid") return registrations.filter(r => r.payment_status === "unpaid")
-    return registrations
+    let filtered = registrations
+
+    // Apply tab filter
+    if (selectedTab === "approved") filtered = filtered.filter(r => r.status === "approved")
+    if (selectedTab === "pending") filtered = filtered.filter(r => r.status === "pending")
+    if (selectedTab === "paid") filtered = filtered.filter(r => r.payment_status === "paid")
+    if (selectedTab === "unpaid") filtered = filtered.filter(r => r.payment_status === "unpaid")
+
+    // Apply search filter
+    if (searchQuery) {
+      filtered = filtered.filter(reg =>
+        reg.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        reg.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        reg.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        reg.phone.includes(searchQuery)
+      )
+    }
+
+    return filtered
   }
+
+  // Pagination
+  const totalItems = filteredRegistrations().length
+  const totalPages = Math.ceil(totalItems / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const paginatedRegistrations = filteredRegistrations().slice(startIndex, startIndex + itemsPerPage)
 
   const handleSendApprovalEmail = async (registration: Registration) => {
     try {
@@ -161,36 +184,22 @@ export default function FullDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-              <Link 
-                href="/admin"
-                className="flex items-center text-gray-600 hover:text-gray-900"
-              >
-                <ArrowLeft className="h-5 w-5 mr-2" />
-                Back to Dashboard
-              </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Full Registration Details</h1>
-            </div>
-            <ExportButton 
-              data={filteredRegistrations()} 
-              filename="cmda-detailed-registrations" 
-              className="bg-green-600 text-white hover:bg-green-700"
-            />
-          </div>
-        </div>
-      </header>
+    <>
+      {/* Page Header */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">Detailed Registrations</h1>
+        <p className="text-gray-600 mt-1">View all registration details with email tracking</p>
+      </div>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow">
-          {/* Tabs for filtering */}
-          <div className="p-4 border-b">
-            <Tabs defaultValue="all" onValueChange={setSelectedTab}>
+      <div className="bg-white rounded-lg shadow">
+        {/* Tabs for filtering */}
+        <div className="p-6 border-b">
+          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+            <Tabs defaultValue="all" onValueChange={(value) => {
+              setSelectedTab(value)
+              setCurrentPage(1)
+            }}>
               <TabsList className="grid grid-cols-5 w-full max-w-xl">
                 <TabsTrigger value="all">All</TabsTrigger>
                 <TabsTrigger value="approved">Approved</TabsTrigger>
@@ -199,50 +208,86 @@ export default function FullDetailsPage() {
                 <TabsTrigger value="unpaid">Unpaid</TabsTrigger>
               </TabsList>
             </Tabs>
+            <ExportButton 
+              data={filteredRegistrations()} 
+              filename="cmda-detailed-registrations" 
+              className="bg-green-600 text-white hover:bg-green-700"
+            />
           </div>
+        </div>
 
-          {/* Data display */}
-          <div className="p-6">
-            {isLoading ? (
-              <div className="text-center py-10">
-                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-purple-600 border-r-transparent align-[-0.125em]"></div>
-                <p className="mt-4 text-gray-600">Loading detailed registration data...</p>
-              </div>
-            ) : registrations.length === 0 ? (
-              <div className="text-center py-10">
-                <p className="text-gray-600">No registration data found</p>
-              </div>
-            ) : (
-              <div style={{ height: "70vh", overflow: "hidden" }}>
-                <div className="h-full overflow-y-auto">
-                  <div className="overflow-x-auto">
-                    <table className="w-full border-collapse">
-                      <thead className="sticky top-0 bg-white z-10">
-                        <tr className="border-b">
-                          <th className="text-left p-3 font-semibold bg-white">ID</th>
-                          <th className="text-left p-3 font-semibold bg-white">Full Name</th>
-                          <th className="text-left p-3 font-semibold bg-white">Email</th>
-                          <th className="text-left p-3 font-semibold bg-white">Phone</th>
-                          <th className="text-left p-3 font-semibold bg-white">Alt Phone</th>
-                          <th className="text-left p-3 font-semibold bg-white">Gender</th>
-                          <th className="text-left p-3 font-semibold bg-white">DOB</th>
-                          <th className="text-left p-3 font-semibold bg-white">Marital Status</th>
-                          <th className="text-left p-3 font-semibold bg-white">City</th>
-                          <th className="text-left p-3 font-semibold bg-white">Address</th>
-                          <th className="text-left p-3 font-semibold bg-white">Institute</th>
-                          <th className="text-left p-3 font-semibold bg-white">Professional Status</th>
-                          <th className="text-left p-3 font-semibold bg-white">Workplace</th>
-                          <th className="text-left p-3 font-semibold bg-white">Attended Before</th>
-                          <th className="text-left p-3 font-semibold bg-white">Expectations</th>
-                          <th className="text-left p-3 font-semibold bg-white">Heard About</th>
-                          <th className="text-left p-3 font-semibold bg-white">Status</th>
-                          <th className="text-left p-3 font-semibold bg-white">Payment Status</th>
-                          <th className="text-left p-3 font-semibold bg-white">Registration Date</th>
-                          <th className="text-left p-3 font-semibold bg-white">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredRegistrations().map((reg) => (
+        {/* Search and Filter Bar */}
+        <div className="p-6 border-b bg-gray-50">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by name, email, or phone..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value)
+                  setCurrentPage(1)
+                }}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+            <select
+              value={itemsPerPage}
+              onChange={(e) => {
+                setItemsPerPage(Number(e.target.value))
+                setCurrentPage(1)
+              }}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            >
+              <option value={10}>10 per page</option>
+              <option value={25}>25 per page</option>
+              <option value={50}>50 per page</option>
+              <option value={100}>100 per page</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Data display */}
+        <div className="p-6">
+          {isLoading ? (
+            <div className="text-center py-10">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-purple-600 border-r-transparent align-[-0.125em]"></div>
+              <p className="mt-4 text-gray-600">Loading detailed registration data...</p>
+            </div>
+          ) : totalItems === 0 ? (
+            <div className="text-center py-10">
+              <p className="text-gray-600">No registration data found matching your criteria</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead className="bg-gray-50">
+                  <tr className="border-b">
+                    <th className="text-left p-4 font-semibold text-gray-700 sticky left-0 bg-gray-50 z-10">ID</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Full Name</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Email</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Phone</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Alt Phone</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Gender</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">DOB</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Marital Status</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">City</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Address</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Institute</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Professional Status</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Workplace</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Attended Before</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Expectations</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Heard About</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Status</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Payment Status</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Registration Date</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedRegistrations.map((reg) => (
                           <tr key={reg.id} className="border-b hover:bg-gray-50">
                             <td className="p-3">{reg.id}</td>
                             <td className="p-3 whitespace-nowrap">
@@ -335,17 +380,25 @@ export default function FullDetailsPage() {
                                 </Button>
                               </div>
                             </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
-      </main>
-    </div>
+
+        {/* Pagination */}
+        {!isLoading && totalItems > 0 && (
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            itemsPerPage={itemsPerPage}
+            totalItems={totalItems}
+          />
+        )}
+      </div>
+    </>
   )
 }

@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { 
-  ArrowLeft, Plus, Eye, Edit, Trash2, Globe, Lock, 
+  Plus, Eye, Edit, Trash2, Globe, Lock, 
   Calendar, MapPin, Users, CheckCircle, Clock, Archive,
-  ExternalLink
+  ExternalLink, Search
 } from "lucide-react"
 import { 
   fetchCampaigns, 
@@ -17,6 +17,7 @@ import {
   getCampaignStats
 } from "@/app/campaigns/actions"
 import type { Campaign } from "@/app/campaigns/actions"
+import PaginationControls from "@/app/components/pagination-controls"
 
 type CampaignWithStats = Campaign & {
   stats?: {
@@ -31,6 +32,10 @@ export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<CampaignWithStats[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showArchived, setShowArchived] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage] = useState(6)
 
   useEffect(() => {
     loadCampaigns()
@@ -119,6 +124,22 @@ export default function CampaignsPage() {
     }
   }
 
+  const filteredCampaigns = campaigns.filter((campaign) => {
+    const matchesSearch =
+      campaign.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      campaign.slug.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      campaign.location.toLowerCase().includes(searchQuery.toLowerCase())
+    
+    const matchesStatus = statusFilter === "all" || campaign.status === statusFilter
+
+    return matchesSearch && matchesStatus
+  })
+
+  // Pagination
+  const totalPages = Math.ceil(filteredCampaigns.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const paginatedCampaigns = filteredCampaigns.slice(startIndex, startIndex + itemsPerPage)
+
   const getStatusBadge = (status: string, isRegistrationOpen: boolean) => {
     const badges: Record<string, { bg: string; text: string; label: string }> = {
       draft: { bg: "bg-gray-100", text: "text-gray-800", label: "Draft" },
@@ -147,67 +168,100 @@ export default function CampaignsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link 
-                href="/admin"
-                className="flex items-center text-gray-600 hover:text-gray-900"
-              >
-                <ArrowLeft className="h-5 w-5 mr-2" />
-                Back to Admin
-              </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Campaign Management</h1>
-            </div>
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 text-sm text-gray-600">
-                <input
-                  type="checkbox"
-                  checked={showArchived}
-                  onChange={(e) => setShowArchived(e.target.checked)}
-                  className="rounded"
-                />
-                Show Archived
-              </label>
-              <Link
-                href="/admin/campaigns/create"
-                className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                New Campaign
-              </Link>
-            </div>
-          </div>
+    <>
+      {/* Page Header */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">Campaign Management</h1>
+        <p className="text-gray-600 mt-1">Create and manage registration campaigns</p>
+      </div>
+
+      {/* Actions Bar */}
+      <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        <div className="flex flex-wrap gap-3 items-center">
+          <label className="flex items-center gap-2 text-sm text-gray-600 bg-white px-4 py-2 rounded-lg border border-gray-200">
+            <input
+              type="checkbox"
+              checked={showArchived}
+              onChange={(e) => {
+                setShowArchived(e.target.checked)
+                setCurrentPage(1)
+              }}
+              className="rounded"
+            />
+            Show Archived
+          </label>
+          <select
+            value={statusFilter}
+            onChange={(e) => {
+              setStatusFilter(e.target.value)
+              setCurrentPage(1)
+            }}
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+          >
+            <option value="all">All Status</option>
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+            <option value="closed">Closed</option>
+          </select>
         </div>
-      </header>
+        <Link
+          href="/admin/campaigns/create"
+          className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 shadow-sm font-medium"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          New Campaign
+        </Link>
+      </div>
+
+      {/* Search Bar */}
+      <div className="mb-6">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search campaigns by title, slug, or location..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value)
+              setCurrentPage(1)
+            }}
+            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white shadow-sm"
+          />
+        </div>
+      </div>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+      {isLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+        </div>
+      ) : filteredCampaigns.length === 0 ? (
+        <div className="bg-white rounded-lg shadow p-12 text-center">
+          <div className="text-gray-400 mb-4">
+            <Calendar className="h-16 w-16 mx-auto" />
           </div>
-        ) : campaigns.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-12 text-center">
-            <div className="text-gray-400 mb-4">
-              <Calendar className="h-16 w-16 mx-auto" />
-            </div>
-            <h2 className="text-xl font-semibold text-gray-700 mb-2">No Campaigns Yet</h2>
-            <p className="text-gray-500 mb-6">Create your first campaign to get started</p>
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">
+            {searchQuery || statusFilter !== "all" ? "No campaigns found" : "No Campaigns Yet"}
+          </h2>
+          <p className="text-gray-500 mb-6">
+            {searchQuery || statusFilter !== "all"
+              ? "Try adjusting your search or filters"
+              : "Create your first campaign to get started"}
+          </p>
+          {!searchQuery && statusFilter === "all" && (
             <Link
               href="/admin/campaigns/create"
-              className="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              className="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium"
             >
               <Plus className="h-5 w-5 mr-2" />
               Create Campaign
             </Link>
-          </div>
-        ) : (
+          )}
+        </div>
+      ) : (
+        <>
           <div className="grid gap-6">
-            {campaigns.map((campaign) => (
+            {paginatedCampaigns.map((campaign) => (
               <div key={campaign.id} className="bg-white rounded-lg shadow overflow-hidden">
                 <div className="p-6">
                   <div className="flex items-start justify-between">
@@ -362,8 +416,19 @@ export default function CampaignsPage() {
               </div>
             ))}
           </div>
-        )}
-      </main>
-    </div>
+
+          {/* Pagination */}
+          <div className="mt-6">
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              itemsPerPage={itemsPerPage}
+              totalItems={filteredCampaigns.length}
+            />
+          </div>
+        </>
+      )}
+    </>
   )
 }

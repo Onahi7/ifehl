@@ -1,9 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ArrowLeft, Download, Check, X, Eye, Lock, Unlock, Calendar } from "lucide-react"
+import { Download, Check, Eye, Lock, Unlock, Search, Filter } from "lucide-react"
 import Link from "next/link"
 import { fetchRegistrations, approveRegistration, isRegistrationOpen, toggleRegistrationStatus } from "../actions"
+import PaginationControls from "../components/pagination-controls"
 
 type Registration = {
   id: number
@@ -16,16 +17,15 @@ type Registration = {
   created_at: string
 }
 
-export default function AdminPage() {  const [registrations, setRegistrations] = useState<Registration[]>([])
+export default function AdminPage() {
+  const [registrations, setRegistrations] = useState<Registration[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("all")
-  const [paymentFilter, setPaymentFilter] = useState<string>("all")
-  const [selectedIds, setSelectedIds] = useState<number[]>([])
-  const [showDetailModal, setShowDetailModal] = useState(false)
   const [registrationOpen, setRegistrationOpen] = useState(true)
   const [isTogglingRegistration, setIsTogglingRegistration] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
 
   useEffect(() => {
     loadRegistrations()
@@ -75,9 +75,26 @@ export default function AdminPage() {  const [registrations, setRegistrations] =
     }
   }
 
+  const filteredRegistrations = registrations.filter((reg) => {
+    const matchesSearch =
+      reg.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      reg.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      reg.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      reg.phone.includes(searchQuery)
+    
+    const matchesStatus = statusFilter === "all" || reg.status === statusFilter
+
+    return matchesSearch && matchesStatus
+  })
+
+  // Pagination
+  const totalPages = Math.ceil(filteredRegistrations.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const paginatedRegistrations = filteredRegistrations.slice(startIndex, startIndex + itemsPerPage)
+
   const exportToCSV = () => {
     const headers = ["ID", "Name", "Email", "Phone", "Status", "Registration Date"]
-    const csvData = registrations.map(reg => [
+    const csvData = filteredRegistrations.map(reg => [
       reg.id,
       `${reg.first_name}${reg.middle_name ? ` ${reg.middle_name}` : ''} ${reg.last_name}`,
       reg.email,
@@ -102,146 +119,172 @@ export default function AdminPage() {  const [registrations, setRegistrations] =
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link 
-                href="/"
-                className="flex items-center text-gray-600 hover:text-gray-900"
-              >
-                <ArrowLeft className="h-5 w-5 mr-2" />
-                Back to Registration
-              </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-            </div>            <div className="flex items-center gap-4">
-              <Link 
-                href="/admin/campaigns"
-                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              >
-                <Calendar className="h-4 w-4 mr-2" />
-                Campaigns
-              </Link>
-              <button
-                onClick={handleToggleRegistration}
-                disabled={isTogglingRegistration}
-                className={`flex items-center px-4 py-2 rounded-md font-semibold transition-colors ${
-                  registrationOpen 
-                    ? 'bg-red-600 text-white hover:bg-red-700' 
-                    : 'bg-green-600 text-white hover:bg-green-700'
-                } disabled:opacity-50 disabled:cursor-not-allowed`}
-                title={registrationOpen ? "Click to close registration" : "Click to open registration"}
-              >
-                {registrationOpen ? (
-                  <>
-                    <Lock className="h-4 w-4 mr-2" />
-                    Close Registration
-                  </>
-                ) : (
-                  <>
-                    <Unlock className="h-4 w-4 mr-2" />
-                    Open Registration
-                  </>
-                )}
-              </button>
-              <Link 
-                href="/admin/full-details"
-                className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
-              >
-                View Full Details
-              </Link>
-              <button
-                onClick={exportToCSV}
-                className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Export CSV
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+    <>
+      {/* Page Header */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">Registration Dashboard</h1>
+        <p className="text-gray-600 mt-1">Manage and track all registrations</p>
+      </div>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow">
-          {/* Registration Status Banner */}
-          <div className="p-4 border-b">
-            <div className={`p-4 rounded-lg text-center font-semibold ${
+      <div className="space-y-6">
+        {/* Registration Status Banner */}
+        <div className={`p-4 rounded-lg text-center font-semibold shadow-sm ${
+          registrationOpen 
+            ? 'bg-green-100 text-green-800 border-2 border-green-300' 
+            : 'bg-red-100 text-red-800 border-2 border-red-300'
+        }`}>
+          {registrationOpen ? (
+            <span className="flex items-center justify-center">
+              <Unlock className="h-5 w-5 mr-2" />
+              Registration is currently OPEN
+            </span>
+          ) : (
+            <span className="flex items-center justify-center">
+              <Lock className="h-5 w-5 mr-2" />
+              Registration is currently CLOSED - Target number met
+            </span>
+          )}
+        </div>
+
+        {/* Quick Actions */}
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={handleToggleRegistration}
+            disabled={isTogglingRegistration}
+            className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors shadow-sm ${
               registrationOpen 
-                ? 'bg-green-100 text-green-800 border-2 border-green-300' 
-                : 'bg-red-100 text-red-800 border-2 border-red-300'
-            }`}>
-              {registrationOpen ? (
-                <span className="flex items-center justify-center">
-                  <Unlock className="h-5 w-5 mr-2" />
-                  Registration is currently OPEN
-                </span>
-              ) : (
-                <span className="flex items-center justify-center">
-                  <Lock className="h-5 w-5 mr-2" />
-                  Registration is currently CLOSED - Target number met
-                </span>
-              )}
-            </div>
-          </div>
+                ? 'bg-red-600 text-white hover:bg-red-700' 
+                : 'bg-green-600 text-white hover:bg-green-700'
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            {registrationOpen ? (
+              <>
+                <Lock className="h-4 w-4 mr-2" />
+                Close Registration
+              </>
+            ) : (
+              <>
+                <Unlock className="h-4 w-4 mr-2" />
+                Open Registration
+              </>
+            )}
+          </button>
+          <button
+            onClick={exportToCSV}
+            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium shadow-sm"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export CSV
+          </button>
+        </div>
+
+        <div className="bg-white rounded-lg shadow">
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 border-b">
-            <div className="bg-purple-50 p-4 rounded-lg">
-              <h3 className="text-purple-900 font-semibold">Total Registrations</h3>
-              <p className="text-3xl font-bold text-purple-700">{registrations.length}</p>
+            <div className="bg-purple-50 p-6 rounded-lg border border-purple-200">
+              <h3 className="text-purple-900 font-semibold text-sm">Total Registrations</h3>
+              <p className="text-4xl font-bold text-purple-700 mt-2">{registrations.length}</p>
             </div>
-            <div className="bg-green-50 p-4 rounded-lg">
-              <h3 className="text-green-900 font-semibold">Approved</h3>
-              <p className="text-3xl font-bold text-green-700">
+            <div className="bg-green-50 p-6 rounded-lg border border-green-200">
+              <h3 className="text-green-900 font-semibold text-sm">Approved</h3>
+              <p className="text-4xl font-bold text-green-700 mt-2">
                 {registrations.filter(r => r.status === "approved").length}
               </p>
             </div>
-            <div className="bg-yellow-50 p-4 rounded-lg">
-              <h3 className="text-yellow-900 font-semibold">Pending</h3>
-              <p className="text-3xl font-bold text-yellow-700">
+            <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+              <h3 className="text-yellow-900 font-semibold text-sm">Pending</h3>
+              <p className="text-4xl font-bold text-yellow-700 mt-2">
                 {registrations.filter(r => r.status === "pending").length}
               </p>
             </div>
           </div>
 
+          {/* Filters and Search */}
+          <div className="p-6 border-b bg-gray-50">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search by name, email, or phone..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value)
+                    setCurrentPage(1)
+                  }}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+              <div className="flex gap-2">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => {
+                    setStatusFilter(e.target.value)
+                    setCurrentPage(1)
+                  }}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                >
+                  <option value="all">All Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+                <select
+                  value={itemsPerPage}
+                  onChange={(e) => {
+                    setItemsPerPage(Number(e.target.value))
+                    setCurrentPage(1)
+                  }}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                >
+                  <option value={10}>10 per page</option>
+                  <option value={25}>25 per page</option>
+                  <option value={50}>50 per page</option>
+                  <option value={100}>100 per page</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           {/* Registrations Table */}
-          <div className="p-6">
-            <div className="overflow-x-auto">
-              <table className="w-full">                <thead>
-                  <tr className="border-b">
-                    <th className="text-left p-3">ID</th>
-                    <th className="text-left p-3">Full Name</th>
-                    <th className="text-left p-3">Email</th>
-                    <th className="text-left p-3">Phone</th>
-                    <th className="text-left p-3">Status</th>
-                    <th className="text-left p-3">Registration Date</th>
-                    <th className="text-left p-3">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {isLoading ? (
-                    <tr>
-                      <td colSpan={7} className="text-center p-4">Loading...</td>
+          <div>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+              </div>
+            ) : paginatedRegistrations.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-500">No registrations found matching your criteria</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr className="border-b">
+                      <th className="text-left p-4 font-semibold text-gray-700">ID</th>
+                      <th className="text-left p-4 font-semibold text-gray-700">Full Name</th>
+                      <th className="text-left p-4 font-semibold text-gray-700">Email</th>
+                      <th className="text-left p-4 font-semibold text-gray-700">Phone</th>
+                      <th className="text-left p-4 font-semibold text-gray-700">Status</th>
+                      <th className="text-left p-4 font-semibold text-gray-700">Registration Date</th>
+                      <th className="text-left p-4 font-semibold text-gray-700">Actions</th>
                     </tr>
-                  ) : registrations.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="text-center p-4">No registrations found</td>
-                    </tr>
-                  ) : (                    registrations.map((reg) => (
-                      <tr key={reg.id} className="border-b hover:bg-gray-50">                        <td className="p-3">{reg.id}</td>
-                        <td className="p-3">
+                  </thead>
+                  <tbody>
+                    {paginatedRegistrations.map((reg) => (
+                      <tr key={reg.id} className="border-b hover:bg-gray-50 transition-colors">
+                        <td className="p-4 font-medium text-gray-900">{reg.id}</td>
+                        <td className="p-4">
                           {reg.first_name} 
-                          {reg.middle_name ? `${reg.middle_name} ` : ''}
+                          {reg.middle_name ? ` ${reg.middle_name} ` : ' '}
                           {reg.last_name}
                         </td>
-                        <td className="p-3">{reg.email}</td>
-                        <td className="p-3">{reg.phone}</td>
-                        <td className="p-3">
-                          <span className={`inline-block px-2 py-1 rounded text-sm font-medium ${
+                        <td className="p-4 text-gray-600">{reg.email}</td>
+                        <td className="p-4 text-gray-600">{reg.phone}</td>
+                        <td className="p-4">
+                          <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
                             reg.status === "approved" 
                               ? "bg-green-100 text-green-800" 
                               : reg.status === "rejected"
@@ -251,37 +294,46 @@ export default function AdminPage() {  const [registrations, setRegistrations] =
                             {reg.status.charAt(0).toUpperCase() + reg.status.slice(1)}
                           </span>
                         </td>
-                        <td className="p-3">
+                        <td className="p-4 text-gray-600">
                           {new Date(reg.created_at).toLocaleDateString()}
                         </td>
-                        <td className="p-3">
+                        <td className="p-4">
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleApprove(reg.id)}
                               disabled={reg.status === "approved"}
-                              className="p-1 text-green-600 hover:text-green-800 disabled:opacity-50"
+                              className="p-2 text-green-600 hover:bg-green-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                               title="Approve"
                             >
                               <Check className="h-5 w-5" />
                             </button>
-                            <button
-                              onClick={() => setSelectedRegistration(reg)}
-                              className="p-1 text-blue-600 hover:text-blue-800"
+                            <Link
+                              href={`/admin/full-details?view=${reg.id}`}
+                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                               title="View Details"
                             >
                               <Eye className="h-5 w-5" />
-                            </button>
+                            </Link>
                           </div>
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
+
+          {/* Pagination */}
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            itemsPerPage={itemsPerPage}
+            totalItems={filteredRegistrations.length}
+          />
         </div>
-      </main>
-    </div>
+      </div>
+    </>
   )
 }
