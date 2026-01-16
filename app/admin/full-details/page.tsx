@@ -6,6 +6,7 @@ import Link from "next/link"
 import { 
   fetchAllRegistrationsWithDetails
 } from "../../actions"
+import { fetchCampaigns } from "@/app/campaigns/actions"
 import { sendApprovalEmail, sendReminderEmail } from "@/app/email-service"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -37,6 +38,9 @@ type Registration = {
   payment_reference?: string
   payment_date?: string
   created_at: string
+  campaign_id?: number
+  campaign_title?: string
+  campaign_slug?: string
   // Add email tracking info
   approvalEmailSent?: boolean
   reminderEmailSent?: boolean
@@ -44,14 +48,17 @@ type Registration = {
 
 export default function FullDetailsPage() {
   const [registrations, setRegistrations] = useState<Registration[]>([])
+  const [campaigns, setCampaigns] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedTab, setSelectedTab] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
+  const [selectedCampaignId, setSelectedCampaignId] = useState<string>("all")
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
 
   useEffect(() => {
     loadRegistrations()
+    loadCampaigns()
   }, [])
 
   const loadRegistrations = async () => {
@@ -75,6 +82,15 @@ export default function FullDetailsPage() {
     }
   }
 
+  const loadCampaigns = async () => {
+    try {
+      const data = await fetchCampaigns(true) // Include archived
+      setCampaigns(data)
+    } catch (error) {
+      console.error("Error loading campaigns:", error)
+    }
+  }
+
   const filteredRegistrations = () => {
     let filtered = registrations
 
@@ -83,6 +99,11 @@ export default function FullDetailsPage() {
     if (selectedTab === "pending") filtered = filtered.filter(r => r.status === "pending")
     if (selectedTab === "paid") filtered = filtered.filter(r => r.payment_status === "paid")
     if (selectedTab === "unpaid") filtered = filtered.filter(r => r.payment_status === "unpaid")
+
+    // Apply campaign filter
+    if (selectedCampaignId !== "all") {
+      filtered = filtered.filter(r => r.campaign_id?.toString() === selectedCampaignId)
+    }
 
     // Apply search filter
     if (searchQuery) {
@@ -193,6 +214,28 @@ export default function FullDetailsPage() {
 
       {/* Main Content */}
       <div className="bg-white rounded-lg shadow">
+        {/* Campaign Selector */}
+        <div className="p-6 border-b bg-gray-50">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Select Campaign
+          </label>
+          <select
+            value={selectedCampaignId}
+            onChange={(e) => {
+              setSelectedCampaignId(e.target.value)
+              setCurrentPage(1)
+            }}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white font-medium"
+          >
+            <option value="all">All Campaigns ({registrations.length})</option>
+            {campaigns.map((campaign) => (
+              <option key={campaign.id} value={campaign.id.toString()}>
+                {campaign.title} ({registrations.filter(r => r.campaign_id === campaign.id).length})
+              </option>
+            ))}
+          </select>
+        </div>
+
         {/* Tabs for filtering */}
         <div className="p-6 border-b">
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
@@ -265,6 +308,7 @@ export default function FullDetailsPage() {
                 <thead className="bg-gray-50">
                   <tr className="border-b">
                     <th className="text-left p-4 font-semibold text-gray-700 sticky left-0 bg-gray-50 z-10">ID</th>
+                    <th className="text-left p-4 font-semibold text-gray-700">Campaign</th>
                     <th className="text-left p-4 font-semibold text-gray-700">Full Name</th>
                     <th className="text-left p-4 font-semibold text-gray-700">Email</th>
                     <th className="text-left p-4 font-semibold text-gray-700">Phone</th>
@@ -290,6 +334,11 @@ export default function FullDetailsPage() {
                   {paginatedRegistrations.map((reg) => (
                           <tr key={reg.id} className="border-b hover:bg-gray-50">
                             <td className="p-3">{reg.id}</td>
+                            <td className="p-3">
+                              <span className="text-xs text-gray-600 bg-blue-50 px-2 py-1 rounded border border-blue-200">
+                                {reg.campaign_title || 'No Campaign'}
+                              </span>
+                            </td>
                             <td className="p-3 whitespace-nowrap">
                               {reg.first_name} 
                               {reg.middle_name ? ` ${reg.middle_name} ` : ' '}

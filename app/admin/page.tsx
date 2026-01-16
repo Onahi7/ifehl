@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Download, Check, Eye, Lock, Unlock, Search, Filter } from "lucide-react"
 import Link from "next/link"
 import { fetchRegistrations, approveRegistration, isRegistrationOpen, toggleRegistrationStatus } from "../actions"
+import { fetchCampaigns } from "../campaigns/actions"
 import PaginationControls from "../components/pagination-controls"
 
 type Registration = {
@@ -15,13 +16,17 @@ type Registration = {
   phone: string
   status: "pending" | "approved" | "rejected"
   created_at: string
+  campaign_id?: number
+  campaign_title?: string
 }
 
 export default function AdminPage() {
   const [registrations, setRegistrations] = useState<Registration[]>([])
+  const [campaigns, setCampaigns] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [selectedCampaignId, setSelectedCampaignId] = useState<string>("all")
   const [registrationOpen, setRegistrationOpen] = useState(true)
   const [isTogglingRegistration, setIsTogglingRegistration] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
@@ -29,6 +34,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     loadRegistrations()
+    loadCampaigns()
     checkRegistrationStatus()
   }, [])
 
@@ -40,6 +46,15 @@ export default function AdminPage() {
       console.error("Error loading registrations:", error)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const loadCampaigns = async () => {
+    try {
+      const data = await fetchCampaigns(true) // Include archived
+      setCampaigns(data)
+    } catch (error) {
+      console.error("Error loading campaigns:", error)
     }
   }
 
@@ -83,8 +98,9 @@ export default function AdminPage() {
       reg.phone.includes(searchQuery)
     
     const matchesStatus = statusFilter === "all" || reg.status === statusFilter
+    const matchesCampaign = selectedCampaignId === "all" || reg.campaign_id?.toString() === selectedCampaignId
 
-    return matchesSearch && matchesStatus
+    return matchesSearch && matchesStatus && matchesCampaign
   })
 
   // Pagination
@@ -203,47 +219,72 @@ export default function AdminPage() {
 
           {/* Filters and Search */}
           <div className="p-6 border-b bg-gray-50">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search by name, email, or phone..."
-                  value={searchQuery}
+            <div className="flex flex-col gap-4">
+              {/* Campaign Selector */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Campaign
+                </label>
+                <select
+                  value={selectedCampaignId}
                   onChange={(e) => {
-                    setSearchQuery(e.target.value)
+                    setSelectedCampaignId(e.target.value)
                     setCurrentPage(1)
                   }}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white font-medium"
+                >
+                  <option value="all">All Campaigns ({registrations.length})</option>
+                  {campaigns.map((campaign) => (
+                    <option key={campaign.id} value={campaign.id.toString()}>
+                      {campaign.title} ({registrations.filter(r => r.campaign_id === campaign.id).length})
+                    </option>
+                  ))}
+                </select>
               </div>
-              <div className="flex gap-2">
-                <select
-                  value={statusFilter}
-                  onChange={(e) => {
-                    setStatusFilter(e.target.value)
-                    setCurrentPage(1)
-                  }}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                >
-                  <option value="all">All Status</option>
-                  <option value="pending">Pending</option>
-                  <option value="approved">Approved</option>
-                  <option value="rejected">Rejected</option>
-                </select>
-                <select
-                  value={itemsPerPage}
-                  onChange={(e) => {
-                    setItemsPerPage(Number(e.target.value))
-                    setCurrentPage(1)
-                  }}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                >
-                  <option value={10}>10 per page</option>
-                  <option value={25}>25 per page</option>
-                  <option value={50}>50 per page</option>
-                  <option value={100}>100 per page</option>
-                </select>
+
+              {/* Search and Filters */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search by name, email, or phone..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value)
+                      setCurrentPage(1)
+                    }}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => {
+                      setStatusFilter(e.target.value)
+                      setCurrentPage(1)
+                    }}
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  >
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      setItemsPerPage(Number(e.target.value))
+                      setCurrentPage(1)
+                    }}
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  >
+                    <option value={10}>10 per page</option>
+                    <option value={25}>25 per page</option>
+                    <option value={50}>50 per page</option>
+                    <option value={100}>100 per page</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
@@ -267,6 +308,7 @@ export default function AdminPage() {
                       <th className="text-left p-4 font-semibold text-gray-700">Full Name</th>
                       <th className="text-left p-4 font-semibold text-gray-700">Email</th>
                       <th className="text-left p-4 font-semibold text-gray-700">Phone</th>
+                      <th className="text-left p-4 font-semibold text-gray-700">Campaign</th>
                       <th className="text-left p-4 font-semibold text-gray-700">Status</th>
                       <th className="text-left p-4 font-semibold text-gray-700">Registration Date</th>
                       <th className="text-left p-4 font-semibold text-gray-700">Actions</th>
@@ -283,6 +325,11 @@ export default function AdminPage() {
                         </td>
                         <td className="p-4 text-gray-600">{reg.email}</td>
                         <td className="p-4 text-gray-600">{reg.phone}</td>
+                        <td className="p-4">
+                          <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                            {reg.campaign_title || 'No Campaign'}
+                          </span>
+                        </td>
                         <td className="p-4">
                           <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
                             reg.status === "approved" 

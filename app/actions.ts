@@ -118,16 +118,19 @@ export async function fetchRegistrations() {
     const sql = neon(process.env.DATABASE_URL!)
     const result = await sql`
       SELECT 
-        id, 
-        first_name, 
-        middle_name,
-        last_name, 
-        email, 
-        phone, 
-        status, 
-        created_at 
-      FROM registrations 
-      ORDER BY created_at DESC
+        r.id, 
+        r.first_name, 
+        r.middle_name,
+        r.last_name, 
+        r.email, 
+        r.phone, 
+        r.status, 
+        r.created_at,
+        r.campaign_id,
+        c.title as campaign_title
+      FROM registrations r
+      LEFT JOIN campaigns c ON r.campaign_id = c.id
+      ORDER BY r.created_at DESC
     `
     return JSON.parse(JSON.stringify(result))
   } catch (error) {
@@ -316,10 +319,15 @@ export async function fetchAllRegistrationsWithDetails() {
   try {
     const sql = neon(process.env.DATABASE_URL!)
     
-    // Fetch all registrations
+    // Fetch all registrations with campaign info
     const registrations = await sql`
-      SELECT * FROM registrations 
-      ORDER BY created_at DESC
+      SELECT 
+        r.*,
+        c.title as campaign_title,
+        c.slug as campaign_slug
+      FROM registrations r
+      LEFT JOIN campaigns c ON r.campaign_id = c.id
+      ORDER BY r.created_at DESC
     `
     
     // Fetch all email tracking records
