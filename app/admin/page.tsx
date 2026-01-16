@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ArrowLeft, Download, Check, X, Eye, Lock, Unlock } from "lucide-react"
+import { ArrowLeft, Download, Check, X, Eye, Lock, Unlock, Calendar } from "lucide-react"
 import Link from "next/link"
 import { fetchRegistrations, approveRegistration, isRegistrationOpen, toggleRegistrationStatus } from "../actions"
 
@@ -117,6 +117,13 @@ export default function AdminPage() {  const [registrations, setRegistrations] =
               </Link>
               <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
             </div>            <div className="flex items-center gap-4">
+              <Link 
+                href="/admin/campaigns"
+                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                Campaigns
+              </Link>
               <button
                 onClick={handleToggleRegistration}
                 disabled={isTogglingRegistration}
