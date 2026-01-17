@@ -3,11 +3,27 @@ import * as React from 'react';
 interface ApprovalEmailProps {
   firstName: string;
   registrationId: string;
+  campaignTitle?: string;
+  campaignDates?: string;
+  campaignVenue?: string;
+  registrationFee?: number;
+  accountName?: string;
+  accountNumber?: string;
+  bankName?: string;
+  contactPhone?: string;
 }
 
 export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
   firstName,
   registrationId,
+  campaignTitle = 'IFEHL 2025',
+  campaignDates = '16-23rd November, 2025',
+  campaignVenue = 'Wholeness House, Gwagalada, Abuja',
+  registrationFee = 50000,
+  accountName = 'Christian Medical and Dental Association of Nigeria',
+  accountNumber = '1018339742',
+  bankName = 'UBA',
+  contactPhone = '08091533339',
 }) => (
   <div style={{
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
@@ -43,7 +59,7 @@ export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
         fontSize: '24px',
         fontWeight: 'bold',
       }}>
-        Registration Approved - IFEHL 2025 (03)
+        Registration Approved - {campaignTitle}
       </h1>
     </div>
     
@@ -59,7 +75,7 @@ export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
       </p>
       
       <p style={{ fontSize: '16px', lineHeight: '1.5', marginBottom: '20px' }}>
-        We are pleased to inform you that your registration (ID: <span style={{ fontWeight: 'bold', color: '#6633cc' }}>{registrationId}</span>) for IFEHL 2025 (03) has been approved.
+        We are pleased to inform you that your registration (ID: <span style={{ fontWeight: 'bold', color: '#6633cc' }}>{registrationId}</span>) for {campaignTitle} has been approved.
       </p>
       
       <div style={{
@@ -74,17 +90,17 @@ export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
         
         <div style={{ display: 'flex', marginBottom: '10px' }}>
           <div style={{ minWidth: '120px', fontWeight: 'bold' }}>Date:</div>
-          <div>16-23rd November, 2025</div>
+          <div>{campaignDates}</div>
         </div>
         
         <div style={{ display: 'flex', marginBottom: '10px' }}>
           <div style={{ minWidth: '120px', fontWeight: 'bold' }}>Venue:</div>
-          <div>Wholeness House, Gwagalada, Abuja</div>
+          <div>{campaignVenue}</div>
         </div>
 
         <div style={{ display: 'flex', marginBottom: '10px' }}>
           <div style={{ minWidth: '120px', fontWeight: 'bold' }}>Registration Fee:</div>
-          <div>₦50,000</div>
+          <div>₦{registrationFee.toLocaleString()}</div>
         </div>
       </div>
 
@@ -102,9 +118,9 @@ export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
         <div style={{ marginBottom: '15px' }}>
           <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>Bank Details:</div>
           <div style={{ lineHeight: '1.8' }}>
-            <strong>Bank:</strong> UBA<br />
-            <strong>Account Number:</strong> 1018339742<br />
-            <strong>Account Name:</strong> Christian Medical and Dental Association of Nigeria
+            <strong>Bank:</strong> {bankName}<br />
+            <strong>Account Number:</strong> {accountNumber}<br />
+            <strong>Account Name:</strong> {accountName}
           </div>
         </div>
 
@@ -119,7 +135,7 @@ export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
             ⚠️ IMPORTANT: Transfer Narration
           </div>
           <div style={{ fontSize: '14px', lineHeight: '1.6' }}>
-            When making your transfer, please add <strong style={{ color: '#dc3545' }}>"IFEHL 2025(03)"</strong> to your transfer narration/description to help us identify your payment quickly.
+            When making your transfer, please add <strong style={{ color: '#dc3545' }}>"{campaignTitle}"</strong> to your transfer narration/description to help us identify your payment quickly.
           </div>
         </div>
 
@@ -141,7 +157,7 @@ export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
       </div>
       
       <p style={{ fontSize: '16px', lineHeight: '1.5', marginBottom: '20px' }}>
-        We look forward to seeing you at the event. Please ensure you complete your payment by <strong>October 31st, 2025</strong>. If you have any questions, please don't hesitate to contact us at <strong>08091533339</strong>.
+        We look forward to seeing you at the event. If you have any questions, please don't hesitate to contact us at <strong>{contactPhone}</strong>.
       </p>
       
       <p style={{ fontSize: '16px', lineHeight: '1.5', marginBottom: '0' }}>

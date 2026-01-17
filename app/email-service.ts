@@ -22,7 +22,7 @@ export async function sendConfirmationEmail(
       : 'Registration Confirmation - IFEHL 2025'
       
     const data = await resend.emails.send({
-      from: `CMDA Registration <${process.env.RESEND_FROM_EMAIL}>`,
+      from: `IFEHL Registration <${process.env.RESEND_FROM_EMAIL}>`,
       to: [to],
       subject: emailSubject,
       react: createElement(ConfirmationEmail, {
@@ -44,15 +44,46 @@ export async function sendConfirmationEmail(
   }
 }
 
-export async function sendApprovalEmail(to: string, firstName: string, registrationId: string) {
+export async function sendApprovalEmail(
+  to: string, 
+  firstName: string, 
+  registrationId: string,
+  campaignData?: {
+    title: string
+    start_date: string
+    end_date: string
+    location: string
+    registration_fee: number
+    payment_account_name?: string
+    payment_account_number?: string
+    payment_bank?: string
+    contact_phone?: string
+  }
+) {
   try {
+    const emailSubject = campaignData?.title 
+      ? `Registration Approved - ${campaignData.title}`
+      : 'Registration Approved - IFEHL 2025'
+
+    const campaignDates = campaignData ? 
+      `${new Date(campaignData.start_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long' })} - ${new Date(campaignData.end_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}` :
+      undefined
+
     const data = await resend.emails.send({
-      from: `CMDA Registration <${process.env.RESEND_FROM_EMAIL}>`,
+      from: `IFEHL Registration <${process.env.RESEND_FROM_EMAIL}>`,
       to: [to],
-      subject: 'Registration Approved - IFEHL 2025',
+      subject: emailSubject,
       react: createElement(ApprovalEmail, {
         firstName,
         registrationId,
+        campaignTitle: campaignData?.title,
+        campaignDates,
+        campaignVenue: campaignData?.location,
+        registrationFee: campaignData?.registration_fee,
+        accountName: campaignData?.payment_account_name,
+        accountNumber: campaignData?.payment_account_number,
+        bankName: campaignData?.payment_bank,
+        contactPhone: campaignData?.contact_phone,
       }),
     });
 
@@ -66,15 +97,46 @@ export async function sendApprovalEmail(to: string, firstName: string, registrat
   }
 }
 
-export async function sendReminderEmail(to: string, firstName: string, registrationId: string) {
+export async function sendReminderEmail(
+  to: string, 
+  firstName: string, 
+  registrationId: string,
+  campaignData?: {
+    title: string
+    start_date: string
+    end_date: string
+    location: string
+    registration_fee: number
+    payment_account_name?: string
+    payment_account_number?: string
+    payment_bank?: string
+    contact_phone?: string
+  }
+) {
   try {
+    const emailSubject = campaignData?.title 
+      ? `Payment Reminder - ${campaignData.title}`
+      : 'Registration Reminder - IFEHL 2025'
+
+    const campaignDates = campaignData ? 
+      `${new Date(campaignData.start_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long' })} - ${new Date(campaignData.end_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}` :
+      undefined
+
     const data = await resend.emails.send({
-      from: `CMDA Registration <${process.env.RESEND_FROM_EMAIL}>`,
+      from: `IFEHL Registration <${process.env.RESEND_FROM_EMAIL}>`,
       to: [to],
-      subject: 'Registration Reminder - IFEHL 2025',
+      subject: emailSubject,
       react: createElement(ReminderEmail, {
         firstName,
         registrationId,
+        campaignTitle: campaignData?.title,
+        campaignDates,
+        campaignVenue: campaignData?.location,
+        registrationFee: campaignData?.registration_fee,
+        accountName: campaignData?.payment_account_name,
+        accountNumber: campaignData?.payment_account_number,
+        bankName: campaignData?.payment_bank,
+        contactPhone: campaignData?.contact_phone,
       }),
     });
 

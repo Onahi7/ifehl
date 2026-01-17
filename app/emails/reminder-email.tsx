@@ -3,11 +3,27 @@ import * as React from 'react';
 interface ReminderEmailProps {
   firstName: string;
   registrationId: string;
+  campaignTitle?: string;
+  campaignDates?: string;
+  campaignVenue?: string;
+  registrationFee?: number;
+  accountName?: string;
+  accountNumber?: string;
+  bankName?: string;
+  contactPhone?: string;
 }
 
 export const ReminderEmail: React.FC<ReminderEmailProps> = ({
   firstName,
   registrationId,
+  campaignTitle = 'IFEHL 2025',
+  campaignDates = '16-23rd November, 2025',
+  campaignVenue = 'Wholeness House, Gwagalada, Abuja',
+  registrationFee = 50000,
+  accountName = 'Christian Medical and Dental Association of Nigeria',
+  accountNumber = '1018339742',
+  bankName = 'UBA',
+  contactPhone = '08091533339',
 }) => (
   <div style={{
     fontFamily: 'Arial, sans-serif',
@@ -40,7 +56,7 @@ export const ReminderEmail: React.FC<ReminderEmailProps> = ({
         fontSize: '28px',
         fontWeight: 'bold',
       }}>
-        Payment Reminder - IFEHL 2025 (03)
+        Payment Reminder - {campaignTitle}
       </h1>
     </div>
     
@@ -56,7 +72,7 @@ export const ReminderEmail: React.FC<ReminderEmailProps> = ({
       </p>
       
       <p style={{ fontSize: '16px', lineHeight: '1.6', marginBottom: '20px', color: '#4b5563' }}>
-        This is a friendly reminder regarding your registration (ID: <span style={{ fontWeight: 'bold', color: '#f59e0b' }}>{registrationId}</span>) for <strong>IFEHL 2025 (03)</strong>.
+        This is a friendly reminder regarding your registration (ID: <span style={{ fontWeight: 'bold', color: '#f59e0b' }}>{registrationId}</span>) for <strong>{campaignTitle}</strong>.
       </p>
       
       {/* Payment Reminder */}
@@ -84,7 +100,7 @@ export const ReminderEmail: React.FC<ReminderEmailProps> = ({
         </div>
         
         <p style={{ fontSize: '16px', lineHeight: '1.6', marginBottom: '15px', color: '#78350f' }}>
-          To secure your spot at IFEHL 2025 (03), please complete your payment of <strong>₦50,000</strong> to:
+          To secure your spot at {campaignTitle}, please complete your payment of <strong>₦{registrationFee.toLocaleString()}</strong> to:
         </p>
         
         <div style={{
@@ -95,13 +111,13 @@ export const ReminderEmail: React.FC<ReminderEmailProps> = ({
           border: '1px solid #fcd34d',
         }}>
           <p style={{ margin: '5px 0', color: '#374151' }}>
-            <strong>Account Name:</strong> Christian Medical and Dental Association of Nigeria
+            <strong>Account Name:</strong> {accountName}
           </p>
           <p style={{ margin: '5px 0', color: '#374151' }}>
-            <strong>Account Number:</strong> 1018339742
+            <strong>Account Number:</strong> {accountNumber}
           </p>
           <p style={{ margin: '5px 0', color: '#374151' }}>
-            <strong>Bank:</strong> UBA
+            <strong>Bank:</strong> {bankName}
           </p>
         </div>
         
@@ -117,7 +133,7 @@ export const ReminderEmail: React.FC<ReminderEmailProps> = ({
             color: '#991b1b',
             fontWeight: 'bold'
           }}>
-            ⚠️ Transfer Instruction: Add "IFEHL 2025(03)" to the narration when making your transfer.
+            ⚠️ Transfer Instruction: Add "{campaignTitle}" to the narration when making your transfer.
           </p>
           <p style={{ 
             margin: '10px 0 0 0',
@@ -143,19 +159,19 @@ export const ReminderEmail: React.FC<ReminderEmailProps> = ({
         </h2>
         
         <p style={{ margin: '10px 0', color: '#4b5563' }}>
-          <strong>📅 Date:</strong> 16-23rd November, 2025
+          <strong>📅 Date:</strong> {campaignDates}
         </p>
         
         <p style={{ margin: '10px 0', color: '#4b5563' }}>
-          <strong>📍 Venue:</strong> Wholeness House, Gwagalada, Abuja
+          <strong>📍 Venue:</strong> {campaignVenue}
         </p>
         
         <p style={{ margin: '10px 0', color: '#4b5563' }}>
-          <strong>💰 Registration Fee:</strong> ₦50,000
+          <strong>💰 Registration Fee:</strong> ₦{registrationFee.toLocaleString()}
         </p>
         
         <p style={{ margin: '10px 0', color: '#4b5563' }}>
-          <strong>📞 Contact:</strong> 08091533339
+          <strong>📞 Contact:</strong> {contactPhone}
         </p>
       </div>
       
@@ -164,7 +180,7 @@ export const ReminderEmail: React.FC<ReminderEmailProps> = ({
       </p>
       
       <p style={{ fontSize: '16px', lineHeight: '1.6', marginBottom: '5px', color: '#4b5563' }}>
-        For any questions, please contact us at <strong>08091533339</strong> or email <strong>office@cmdanigeria.org</strong>.
+        For any questions, please contact us at <strong>{contactPhone}</strong> or email <strong>office@cmdanigeria.org</strong>.
       </p>
       
       <div style={{

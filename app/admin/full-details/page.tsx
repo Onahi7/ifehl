@@ -126,10 +126,30 @@ export default function FullDetailsPage() {
 
   const handleSendApprovalEmail = async (registration: Registration) => {
     try {
+      // Fetch campaign details if campaign_id exists
+      let campaignData
+      if (registration.campaign_id) {
+        const campaign = campaigns.find(c => c.id === registration.campaign_id)
+        if (campaign) {
+          campaignData = {
+            title: campaign.title,
+            start_date: campaign.start_date,
+            end_date: campaign.end_date,
+            location: campaign.location,
+            registration_fee: campaign.registration_fee,
+            payment_account_name: campaign.payment_account_name,
+            payment_account_number: campaign.payment_account_number,
+            payment_bank: campaign.payment_bank,
+            contact_phone: campaign.contact_phone,
+          }
+        }
+      }
+
       const result = await sendApprovalEmail(
         registration.email,
         registration.first_name,
-        registration.id.toString()
+        registration.id.toString(),
+        campaignData
       )
       
       if (result.success) {
@@ -166,10 +186,30 @@ export default function FullDetailsPage() {
 
   const handleSendReminderEmail = async (registration: Registration) => {
     try {
+      // Fetch campaign details if campaign_id exists
+      let campaignData
+      if (registration.campaign_id) {
+        const campaign = campaigns.find(c => c.id === registration.campaign_id)
+        if (campaign) {
+          campaignData = {
+            title: campaign.title,
+            start_date: campaign.start_date,
+            end_date: campaign.end_date,
+            location: campaign.location,
+            registration_fee: campaign.registration_fee,
+            payment_account_name: campaign.payment_account_name,
+            payment_account_number: campaign.payment_account_number,
+            payment_bank: campaign.payment_bank,
+            contact_phone: campaign.contact_phone,
+          }
+        }
+      }
+
       const result = await sendReminderEmail(
         registration.email,
         registration.first_name,
-        registration.id.toString()
+        registration.id.toString(),
+        campaignData
       )
       
       if (result.success) {
