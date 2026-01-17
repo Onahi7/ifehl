@@ -35,13 +35,9 @@ export default function Home() {
             <div className="flex items-center gap-4">
               <img 
                 src="/IfHEL. Logo.png" 
-                alt="CMDA Nigeria" 
+                alt="IFEHL" 
                 className="h-12 sm:h-16 w-auto object-contain" 
               />
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">CMDA Nigeria</h1>
-                <p className="text-sm text-gray-600">Christian Medical & Dental Association</p>
-              </div>
             </div>
           </div>
         </div>
@@ -52,7 +48,7 @@ export default function Home() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl sm:text-5xl font-bold mb-4">Event Registration Portal</h2>
           <p className="text-lg sm:text-xl opacity-90 max-w-2xl mx-auto">
-            Register for upcoming CMDA Nigeria events, conferences, and training programs
+            Register For IFEHL Campaigns
           </p>
         </div>
       </section>
