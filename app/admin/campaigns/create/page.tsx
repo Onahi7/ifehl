@@ -64,15 +64,21 @@ export default function CreateCampaignPage() {
     setError(null)
 
     try {
+      console.log('Submitting campaign data:', formData)
       const result = await createCampaign(formData)
+      console.log('Campaign creation result:', result)
       
       if (result.success) {
+        alert('Campaign created successfully!')
         router.push(`/admin/campaigns/${result.campaignId}`)
       } else {
         setError(result.message || "Failed to create campaign")
+        alert('Error: ' + (result.message || "Failed to create campaign"))
       }
-    } catch (err) {
-      setError("An unexpected error occurred")
+    } catch (err: any) {
+      console.error('Campaign creation error:', err)
+      setError("An unexpected error occurred: " + err.message)
+      alert("An unexpected error occurred: " + err.message)
     } finally {
       setIsSubmitting(false)
     }

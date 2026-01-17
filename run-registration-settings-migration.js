@@ -8,8 +8,8 @@ const dotenv = require('dotenv');
 const fs = require('fs');
 const path = require('path');
 
-// Load environment variables
-dotenv.config();
+// Load environment variables from .env.local
+dotenv.config({ path: '.env.local' });
 
 const DATABASE_URL = process.env.DATABASE_URL;
 
@@ -30,10 +30,24 @@ async function runMigration() {
     console.log('Running migration to add registration_settings table...');
     
     const sql = neon(DATABASE_URL);
-    const migrationSQL = fs.readFileSync(migrationFile, 'utf8');
     
-    // Execute the migration
-    await sql(migrationSQL);
+    // Create the table
+    await sql`
+      CREATE TABLE IF NOT EXISTS registration_settings (
+        id SERIAL PRIMARY KEY,
+        registration_open BOOLEAN DEFAULT true,
+        close_reason VARCHAR(500) DEFAULT 'Registration has closed as we have met the target number of participants.',
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_by VARCHAR(255)
+      )
+    `;
+    
+    // Insert default settings if not exists
+    await sql`
+      INSERT INTO registration_settings (id, registration_open, close_reason)
+      VALUES (1, true, 'Registration has closed as we have met the target number of participants.')
+      ON CONFLICT (id) DO NOTHING
+    `;
     
     console.log('✅ Migration completed successfully');
     console.log('Registration settings table created with default values');

@@ -137,6 +137,24 @@ export async function fetchCampaigns(includeArchived = false) {
   }
 }
 
+// Fetch published campaigns for public landing page
+export async function fetchPublishedCampaigns() {
+  try {
+    const sql = neon(process.env.DATABASE_URL!)
+    
+    const result = await sql`
+      SELECT * FROM campaigns 
+      WHERE status = 'published'
+      ORDER BY start_date ASC
+    `
+    
+    return JSON.parse(JSON.stringify(result))
+  } catch (error) {
+    console.error("Error fetching published campaigns:", error)
+    throw new Error("Failed to fetch published campaigns")
+  }
+}
+
 // Fetch single campaign by slug
 export async function fetchCampaignBySlug(slug: string) {
   try {

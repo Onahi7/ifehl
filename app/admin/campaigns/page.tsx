@@ -275,7 +275,7 @@ export default function CampaignsPage() {
                         Slug: <code className="bg-gray-100 px-2 py-0.5 rounded">{campaign.slug}</code>
                         {campaign.status === 'published' && (
                           <a 
-                            href={`https://${campaign.slug}.cmdanigeria.org`}
+                            href={`https://ifehl.cmdanigeria.org/campaigns/${campaign.slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="ml-2 text-purple-600 hover:text-purple-800 inline-flex items-center"
