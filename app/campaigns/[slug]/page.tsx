@@ -201,52 +201,114 @@ export default function CampaignPage({ params }: { params: Promise<{ slug: strin
   }
 
   if (showSuccess && submitResult?.registrationId) {
+    const whatsappGroupLink = "https://chat.whatsapp.com/IBx6CvdfUMdAmg59agv6Gd"
+    const whatsappContactNumber = campaign.contact_phone || "08091533339"
+    const fullName = `${formData.firstName} ${formData.middleName} ${formData.lastName}`.replace(/\s+/g, ' ').trim()
+    
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full text-center">
+        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 max-w-2xl w-full">
+          {/* Logo */}
+          {campaign.logo_image_url && (
+            <div className="text-center mb-6">
+              <img 
+                src={campaign.logo_image_url} 
+                alt={campaign.title} 
+                className="h-16 w-auto mx-auto object-contain" 
+              />
+            </div>
+          )}
+          
+          {/* Success Icon */}
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Registration Successful!</h1>
-          <p className="text-gray-600 mb-4">
+          
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 text-center">Registration Successful!</h1>
+          <p className="text-gray-600 mb-4 text-center">
             Thank you for registering for <strong>{campaign.title}</strong>
           </p>
-          <div className="bg-gray-50 rounded-lg p-4 mb-6">
-            <p className="text-sm text-gray-500">Your Registration ID</p>
-            <p className="text-2xl font-bold text-purple-600">{submitResult.registrationId}</p>
-          </div>
-          <p className="text-sm text-gray-500 mb-6">
-            A confirmation email has been sent to <strong>{formData.email}</strong>
-          </p>
           
+          {/* Registration Details */}
+          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <h3 className="font-semibold text-gray-800 mb-3">Your Registration Details</h3>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-gray-500">Registration ID:</p>
+                <p className="text-lg font-bold text-purple-600">{submitResult.registrationId}</p>
+              </div>
+              <div>
+                <p className="text-gray-500">Name:</p>
+                <p className="font-semibold text-gray-900">{fullName}</p>
+              </div>
+              <div>
+                <p className="text-gray-500">Email:</p>
+                <p className="font-semibold text-gray-900 break-words">{formData.email}</p>
+              </div>
+              <div>
+                <p className="text-gray-500">Phone:</p>
+                <p className="font-semibold text-gray-900">{formData.phone}</p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Payment Information */}
           {campaign.payment_account_name && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 text-left">
-              <h3 className="font-semibold text-yellow-800 mb-2">Payment Information</h3>
-              <p className="text-sm text-yellow-700">
-                Please complete your payment of <strong>₦{Number(campaign.registration_fee).toLocaleString()}</strong>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+              <h3 className="font-semibold text-yellow-800 mb-2 flex items-center gap-2">
+                <span>⚠️</span>
+                <span>Important: Complete Your Payment</span>
+              </h3>
+              <p className="text-sm text-yellow-700 mb-3">
+                Please complete your payment of <strong>₦{Number(campaign.registration_fee).toLocaleString()}</strong> to validate your registration.
               </p>
-              <div className="mt-2 text-sm text-yellow-700">
-                <p><strong>Account:</strong> {campaign.payment_account_name}</p>
-                <p><strong>Number:</strong> {campaign.payment_account_number}</p>
+              <div className="bg-white rounded p-3 text-sm text-gray-700 space-y-1">
+                <p><strong>Account Name:</strong> {campaign.payment_account_name}</p>
+                <p><strong>Account Number:</strong> {campaign.payment_account_number}</p>
                 <p><strong>Bank:</strong> {campaign.payment_bank}</p>
               </div>
               {campaign.payment_instructions && (
-                <p className="mt-2 text-sm text-yellow-800 font-medium">{campaign.payment_instructions}</p>
+                <div className="mt-3 bg-red-50 border border-red-200 rounded p-3">
+                  <p className="text-sm text-red-700 font-medium">
+                    <strong>Transfer Instruction:</strong> {campaign.payment_instructions}
+                  </p>
+                </div>
               )}
+              <p className="text-xs text-yellow-600 mt-3">
+                After payment, send your receipt to <strong>{whatsappContactNumber}</strong> on WhatsApp for confirmation.
+              </p>
             </div>
           )}
 
-          <button
-            onClick={() => {
-              setShowSuccess(false)
-              resetForm()
-            }}
-            className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-          >
-            Register Another Person
-          </button>
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <a
+              href={whatsappGroupLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+              </svg>
+              Join WhatsApp Group
+            </a>
+            <button
+              onClick={() => {
+                setShowSuccess(false)
+                resetForm()
+              }}
+              className="flex-1 px-6 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              Register Another Person
+            </button>
+          </div>
+          
+          <p className="text-xs text-gray-500 text-center">
+            A confirmation email has been sent to <strong>{formData.email}</strong>
+          </p>
         </div>
       </div>
     )
@@ -302,16 +364,25 @@ export default function CampaignPage({ params }: { params: Promise<{ slug: strin
       </header>
 
       {/* Banner */}
-      <div 
-        className="bg-gradient-to-r from-gray-500 via-purple-800 to-green-800 text-white py-10 text-center"
-        style={campaign.banner_image_url ? { 
-          backgroundImage: `url(${campaign.banner_image_url})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        } : {}}
-      >
-        <h2 className="text-3xl font-bold">{campaign.title}</h2>
-        {campaign.subtitle && <p className="text-lg mt-2 opacity-90">{campaign.subtitle}</p>}
+      <div className="relative w-full bg-gradient-to-r from-gray-500 via-purple-800 to-green-800">
+        {campaign.banner_image_url ? (
+          <div className="relative w-full h-48 md:h-64 lg:h-80">
+            <img 
+              src={campaign.banner_image_url} 
+              alt={campaign.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-white">
+              <h2 className="text-3xl md:text-4xl font-bold px-4 text-center">{campaign.title}</h2>
+              {campaign.subtitle && <p className="text-lg md:text-xl mt-2 opacity-90 px-4 text-center">{campaign.subtitle}</p>}
+            </div>
+          </div>
+        ) : (
+          <div className="py-10 text-center text-white">
+            <h2 className="text-3xl font-bold">{campaign.title}</h2>
+            {campaign.subtitle && <p className="text-lg mt-2 opacity-90">{campaign.subtitle}</p>}
+          </div>
+        )}
       </div>
 
       {/* Main Content */}

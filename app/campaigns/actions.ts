@@ -475,6 +475,22 @@ export async function submitCampaignRegistration(campaignId: number, formData: R
     
     const registrationId = result[0]?.id
     
+    // Send confirmation email (don't block on email failure)
+    try {
+      const { sendConfirmationEmail } = await import('../email-service')
+      const fullName = `${formData.firstName} ${formData.middleName || ''} ${formData.lastName}`.trim()
+      await sendConfirmationEmail(
+        formData.email,
+        formData.firstName,
+        registrationId.toString(),
+        fullName,
+        campaign[0].title
+      )
+    } catch (emailError) {
+      console.error("Error sending confirmation email:", emailError)
+      // Don't fail the registration if email fails
+    }
+    
     return {
       success: true,
       message: "Registration submitted successfully!",

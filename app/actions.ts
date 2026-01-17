@@ -319,13 +319,13 @@ export async function fetchAllRegistrationsWithDetails() {
   try {
     const sql = neon(process.env.DATABASE_URL!)
     
-    // Fetch all registrations with campaign info
+    // Fetch all registrations with campaign info from campaign_registrations table
     const registrations = await sql`
       SELECT 
         r.*,
         c.title as campaign_title,
         c.slug as campaign_slug
-      FROM registrations r
+      FROM campaign_registrations r
       LEFT JOIN campaigns c ON r.campaign_id = c.id
       ORDER BY r.created_at DESC
     `

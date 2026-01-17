@@ -5,6 +5,7 @@ interface ConfirmationEmailProps {
   registrationId: string;
   fullName: string;
   email: string;
+  campaignTitle?: string;
 }
 
 export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
@@ -12,6 +13,7 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
   registrationId,
   fullName,
   email,
+  campaignTitle = 'IFEHL 2025',
 }) => (
   <div style={{ 
     fontFamily: 'Arial, sans-serif', 
@@ -38,7 +40,7 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
           display: 'block' 
         }} 
       />
-      <h1 style={{ margin: '0', fontSize: '28px' }}>IFEHL 2025 (03)</h1>
+      <h1 style={{ margin: '0', fontSize: '28px' }}>{campaignTitle}</h1>
       <p style={{ margin: '10px 0 0 0', fontSize: '16px', opacity: '0.9' }}>
         Christian Medical and Dental Association of Nigeria
       </p>
@@ -81,7 +83,7 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
       </h2>
 
       <p style={{ color: '#4b5563', lineHeight: '1.6', marginBottom: '20px' }}>
-        Thank you for registering for <strong>IFEHL 2025 (03)</strong>! We have successfully received your registration 
+        Thank you for registering for <strong>{campaignTitle}</strong>! We have successfully received your registration 
         and you should receive this confirmation email as proof of your submission.
       </p>
 
@@ -220,10 +222,42 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
         </h3>
         <ol style={{ color: '#1e3a8a', lineHeight: '1.8', margin: '0', paddingLeft: '20px' }}>
           <li>Complete your payment using the details above</li>
+          <li>Send your payment receipt to 08091533339 on WhatsApp</li>
+          <li>Join our WhatsApp group for updates (link below)</li>
           <li>Keep this email and your Registration ID safe</li>
-          <li>Wait for confirmation of payment processing</li>
           <li>You will receive further instructions closer to the event date</li>
         </ol>
+      </div>
+
+      {/* WhatsApp Group Button */}
+      <div style={{ 
+        textAlign: 'center', 
+        marginBottom: '25px' 
+      }}>
+        <a 
+          href="https://chat.whatsapp.com/IBx6CvdfUMdAmg59agv6Gd"
+          style={{
+            display: 'inline-block',
+            backgroundColor: '#25D366',
+            color: 'white',
+            padding: '15px 30px',
+            textDecoration: 'none',
+            borderRadius: '8px',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+          }}
+        >
+          📱 Join WhatsApp Group
+        </a>
+        <p style={{ 
+          color: '#6b7280', 
+          fontSize: '13px', 
+          marginTop: '10px',
+          margin: '10px 0 0 0'
+        }}>
+          Click the button above to join our community group
+        </p>
       </div>
 
       <p style={{ color: '#4b5563', lineHeight: '1.6', marginBottom: '20px' }}>
@@ -233,7 +267,7 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
       </p>
 
       <p style={{ color: '#4b5563', lineHeight: '1.6' }}>
-        We look forward to seeing you at IFEHL 2025 (03)!
+        We look forward to seeing you at {campaignTitle}!
       </p>
 
       <div style={{ 
@@ -264,7 +298,7 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
         Christian Medical and Dental Association of Nigeria
       </p>
       <p style={{ margin: '0' }}>
-        This email was sent to {email} regarding your IFEHL 2025 (03) registration.
+        This email was sent to {email} regarding your {campaignTitle} registration.
       </p>
     </div>
   </div>
