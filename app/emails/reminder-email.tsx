@@ -87,18 +87,6 @@ export const ReminderEmail: React.FC<ReminderEmailProps> = ({
           ⚠️ Action Required: Complete Your Payment
         </h2>
         
-        <div style={{
-          backgroundColor: '#dc2626',
-          color: 'white',
-          padding: '12px 15px',
-          borderRadius: '6px',
-          marginBottom: '15px',
-          textAlign: 'center' as const,
-          fontWeight: 'bold',
-        }}>
-          ⏰ PAYMENT DEADLINE: October 31st, 2025 - Last Day of Collection!
-        </div>
-        
         <p style={{ fontSize: '16px', lineHeight: '1.6', marginBottom: '15px', color: '#78350f' }}>
           To secure your spot at {campaignTitle}, please complete your payment of <strong>₦{registrationFee.toLocaleString()}</strong> to:
         </p>

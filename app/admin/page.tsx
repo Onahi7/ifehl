@@ -5,7 +5,9 @@ import { Download, Check, Eye, Lock, Unlock, Search, Filter } from "lucide-react
 import Link from "next/link"
 import { fetchRegistrations, approveRegistration, isRegistrationOpen, toggleRegistrationStatus } from "../actions"
 import { fetchCampaigns } from "../campaigns/actions"
+import { sendApprovalEmail } from "../email-service"
 import PaginationControls from "../components/pagination-controls"
+import { toast } from "@/components/ui/use-toast"
 
 type Registration = {
   id: number
@@ -84,9 +86,60 @@ export default function AdminPage() {
   const handleApprove = async (id: number) => {
     try {
       await approveRegistration(id)
+      
+      // Find the registration and send approval email
+      const registration = registrations.find(r => r.id === id)
+      if (registration) {
+        // Fetch campaign details for the email
+        let campaignData
+        if (registration.campaign_id) {
+          const campaign = campaigns.find(c => c.id === registration.campaign_id)
+          if (campaign) {
+            campaignData = {
+              title: campaign.title,
+              start_date: campaign.start_date,
+              end_date: campaign.end_date,
+              location: campaign.location,
+              registration_fee: campaign.registration_fee,
+              payment_account_name: campaign.payment_account_name,
+              payment_account_number: campaign.payment_account_number,
+              payment_bank: campaign.payment_bank,
+              contact_phone: campaign.contact_phone,
+            }
+          }
+        }
+
+        // Send approval email
+        const emailResult = await sendApprovalEmail(
+          registration.email,
+          registration.first_name,
+          registration.id.toString(),
+          campaignData
+        )
+
+        if (emailResult.success) {
+          toast({
+            title: "Registration Approved",
+            description: `Approval email sent to ${registration.email}`,
+            variant: "default",
+          })
+        } else {
+          toast({
+            title: "Registration Approved",
+            description: "Registration approved but email failed to send",
+            variant: "destructive",
+          })
+        }
+      }
+      
       await loadRegistrations() // Refresh the list
     } catch (error) {
       console.error("Error approving registration:", error)
+      toast({
+        title: "Error",
+        description: "Failed to approve registration",
+        variant: "destructive",
+      })
     }
   }
 
