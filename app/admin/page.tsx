@@ -85,15 +85,20 @@ export default function AdminPage() {
   }
   const handleApprove = async (id: number) => {
     try {
+      console.log('Starting approval for ID:', id)
       await approveRegistration(id)
+      console.log('Registration approved in database')
       
       // Find the registration and send approval email
       const registration = registrations.find(r => r.id === id)
+      console.log('Found registration:', registration)
+      
       if (registration) {
         // Fetch campaign details for the email
         let campaignData
         if (registration.campaign_id) {
           const campaign = campaigns.find(c => c.id === registration.campaign_id)
+          console.log('Found campaign:', campaign)
           if (campaign) {
             campaignData = {
               title: campaign.title,
@@ -109,6 +114,9 @@ export default function AdminPage() {
           }
         }
 
+        console.log('Sending approval email to:', registration.email)
+        console.log('Campaign data:', campaignData)
+        
         // Send approval email
         const emailResult = await sendApprovalEmail(
           registration.email,
@@ -117,6 +125,8 @@ export default function AdminPage() {
           campaignData
         )
 
+        console.log('Email result:', emailResult)
+
         if (emailResult.success) {
           toast({
             title: "Registration Approved",
@@ -124,6 +134,7 @@ export default function AdminPage() {
             variant: "default",
           })
         } else {
+          console.error('Email send failed:', emailResult.error)
           toast({
             title: "Registration Approved",
             description: "Registration approved but email failed to send",

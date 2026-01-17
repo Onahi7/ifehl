@@ -16,6 +16,7 @@ import {
   ChevronRight,
   BarChart3
 } from "lucide-react"
+import { Toaster } from "@/components/ui/toaster"
 
 export default function AdminLayout({
   children,
@@ -170,6 +171,7 @@ export default function AdminLayout({
         {/* Page Content */}
         <main className="p-6">{children}</main>
       </div>
+      <Toaster />
     </div>
   )
 }
