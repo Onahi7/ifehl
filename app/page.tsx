@@ -83,14 +83,16 @@ export default function Home() {
                 className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
               >
                 {/* Campaign Banner */}
-                <div 
-                  className="h-40 bg-gradient-to-r from-purple-600 to-green-600 relative"
-                  style={campaign.banner_image_url ? {
-                    backgroundImage: `url(${campaign.banner_image_url})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
-                  } : {}}
-                >
+                <div className="h-48 relative overflow-hidden">
+                  {campaign.banner_image_url ? (
+                    <img 
+                      src={campaign.banner_image_url} 
+                      alt={campaign.title}
+                      className="w-full h-full object-contain bg-gradient-to-r from-purple-600 to-green-600"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-r from-purple-600 to-green-600"></div>
+                  )}
                   {campaign.logo_image_url && (
                     <img 
                       src={campaign.logo_image_url} 
