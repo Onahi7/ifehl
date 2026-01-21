@@ -12,6 +12,7 @@ interface ReminderEmailProps {
   bankName?: string;
   contactPhone?: string;
   paymentInstructions?: string;
+  logoUrl?: string;
 }
 
 export const ReminderEmail: React.FC<ReminderEmailProps> = ({
@@ -26,6 +27,7 @@ export const ReminderEmail: React.FC<ReminderEmailProps> = ({
   bankName = 'UBA',
   contactPhone = '08091533339',
   paymentInstructions,
+  logoUrl,
 }) => (
   <div style={{
     fontFamily: 'Arial, sans-serif',
@@ -43,7 +45,7 @@ export const ReminderEmail: React.FC<ReminderEmailProps> = ({
       borderRadius: '8px 8px 0 0',
     }}>
       <img 
-        src="/IfHEL. Logo.png" 
+        src={logoUrl || 'https://ifehl.cmdanigeria.org/IfHEL.%20Logo.png'} 
         alt="IFEHL Logo" 
         style={{ 
           height: '60px', 

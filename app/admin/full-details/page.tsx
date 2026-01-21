@@ -130,6 +130,7 @@ export default function FullDetailsPage() {
       let campaignData
       if (registration.campaign_id) {
         const campaign = campaigns.find(c => c.id === registration.campaign_id)
+        console.log('Full campaign object:', campaign)
         if (campaign) {
           campaignData = {
             title: campaign.title,
@@ -144,6 +145,7 @@ export default function FullDetailsPage() {
             payment_instructions: campaign.payment_instructions,
             registration_deadline: campaign.registration_deadline,
           }
+          console.log('Mapped campaignData for approval email:', campaignData)
         }
       }
 
@@ -192,6 +194,7 @@ export default function FullDetailsPage() {
       let campaignData
       if (registration.campaign_id) {
         const campaign = campaigns.find(c => c.id === registration.campaign_id)
+        console.log('Full campaign object:', campaign)
         if (campaign) {
           campaignData = {
             title: campaign.title,
@@ -205,6 +208,7 @@ export default function FullDetailsPage() {
             contact_phone: campaign.contact_phone,
             payment_instructions: campaign.payment_instructions,
           }
+          console.log('Mapped campaignData for reminder email:', campaignData)
         }
       }
 

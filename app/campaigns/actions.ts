@@ -429,7 +429,11 @@ export async function submitCampaignRegistration(campaignId: number, formData: R
     
     // Check if campaign exists and is accepting registrations
     const campaign = await sql`
-      SELECT id, title, is_registration_open, status 
+      SELECT 
+        id, title, is_registration_open, status,
+        start_date, end_date, location, registration_fee,
+        payment_account_name, payment_account_number, payment_bank,
+        contact_phone, payment_instructions
       FROM campaigns 
       WHERE id = ${campaignId}
     `
@@ -495,6 +499,8 @@ export async function submitCampaignRegistration(campaignId: number, formData: R
           payment_bank: campaign[0].payment_bank,
           contact_phone: campaign[0].contact_phone,
           payment_instructions: campaign[0].payment_instructions,
+          logo_image_url: campaign[0].logo_image_url,
+          banner_image_url: campaign[0].banner_image_url,
         }
       )
     } catch (emailError) {

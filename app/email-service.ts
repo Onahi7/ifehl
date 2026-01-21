@@ -25,16 +25,29 @@ export async function sendConfirmationEmail(
     payment_bank?: string
     contact_phone?: string
     payment_instructions?: string
+    logo_image_url?: string
+    banner_image_url?: string
   }
 ) {
   try {
+    console.log('sendConfirmationEmail - campaignData:', campaignData)
+
     const emailSubject = campaignData?.title 
       ? `Registration Confirmation - ${campaignData.title}`
       : 'Registration Confirmation - IFEHL 2025'
 
-    const campaignDates = campaignData ? 
-      `${new Date(campaignData.start_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long' })} - ${new Date(campaignData.end_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}` :
-      undefined
+    let campaignDates: string | undefined
+    if (campaignData?.start_date && campaignData?.end_date) {
+      try {
+        const startDate = new Date(campaignData.start_date)
+        const endDate = new Date(campaignData.end_date)
+        if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+          campaignDates = `${startDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long' })} - ${endDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}`
+        }
+      } catch (dateError) {
+        console.error('Error formatting campaign dates:', dateError)
+      }
+    }
       
     const data = await resend.emails.send({
       from: `IFEHL Registration <${process.env.RESEND_FROM_EMAIL}>`,
@@ -54,11 +67,15 @@ export async function sendConfirmationEmail(
         bankName: campaignData?.payment_bank,
         contactPhone: campaignData?.contact_phone,
         paymentInstructions: campaignData?.payment_instructions,
+        logoUrl: campaignData?.logo_image_url || campaignData?.banner_image_url,
       }),
     });
 
-    // Track that the email was sent
-    await trackEmailSent(parseInt(registrationId), 'confirmation' as any);
+    // Track that the email was sent (skip for test IDs)
+    const numericId = parseInt(registrationId);
+    if (!isNaN(numericId)) {
+      await trackEmailSent(numericId, 'confirmation' as any);
+    }
 
     return { success: true, data };
   } catch (error) {
@@ -83,20 +100,41 @@ export async function sendApprovalEmail(
     contact_phone?: string
     payment_instructions?: string
     registration_deadline?: string
+    logo_image_url?: string
+    banner_image_url?: string
   }
 ) {
   try {
+    console.log('sendApprovalEmail - campaignData:', campaignData)
+
     const emailSubject = campaignData?.title 
       ? `Registration Approved - ${campaignData.title}`
       : 'Registration Approved - IFEHL 2025'
 
-    const campaignDates = campaignData ? 
-      `${new Date(campaignData.start_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long' })} - ${new Date(campaignData.end_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}` :
-      undefined
+    let campaignDates: string | undefined
+    if (campaignData?.start_date && campaignData?.end_date) {
+      try {
+        const startDate = new Date(campaignData.start_date)
+        const endDate = new Date(campaignData.end_date)
+        if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+          campaignDates = `${startDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long' })} - ${endDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}`
+        }
+      } catch (dateError) {
+        console.error('Error formatting campaign dates:', dateError)
+      }
+    }
 
-    const paymentDeadline = campaignData?.registration_deadline ? 
-      new Date(campaignData.registration_deadline).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) :
-      undefined
+    let paymentDeadline: string | undefined
+    if (campaignData?.registration_deadline) {
+      try {
+        const deadline = new Date(campaignData.registration_deadline)
+        if (!isNaN(deadline.getTime())) {
+          paymentDeadline = deadline.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+        }
+      } catch (dateError) {
+        console.error('Error formatting payment deadline:', dateError)
+      }
+    }
 
     const data = await resend.emails.send({
       from: `IFEHL Registration <${process.env.RESEND_FROM_EMAIL}>`,
@@ -115,11 +153,15 @@ export async function sendApprovalEmail(
         contactPhone: campaignData?.contact_phone,
         paymentDeadline,
         paymentInstructions: campaignData?.payment_instructions,
+        logoUrl: campaignData?.logo_image_url || campaignData?.banner_image_url,
       }),
     });
 
-    // Track that the email was sent
-    await trackEmailSent(parseInt(registrationId), 'approval');
+    // Track that the email was sent (skip for test IDs)
+    const numericId = parseInt(registrationId);
+    if (!isNaN(numericId)) {
+      await trackEmailSent(numericId, 'approval');
+    }
 
     return { success: true, data };
   } catch (error) {
@@ -143,16 +185,29 @@ export async function sendReminderEmail(
     payment_bank?: string
     contact_phone?: string
     payment_instructions?: string
+    logo_image_url?: string
+    banner_image_url?: string
   }
 ) {
   try {
+    console.log('sendReminderEmail - campaignData:', campaignData)
+
     const emailSubject = campaignData?.title 
       ? `Payment Reminder - ${campaignData.title}`
       : 'Registration Reminder - IFEHL 2025'
 
-    const campaignDates = campaignData ? 
-      `${new Date(campaignData.start_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long' })} - ${new Date(campaignData.end_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}` :
-      undefined
+    let campaignDates: string | undefined
+    if (campaignData?.start_date && campaignData?.end_date) {
+      try {
+        const startDate = new Date(campaignData.start_date)
+        const endDate = new Date(campaignData.end_date)
+        if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+          campaignDates = `${startDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long' })} - ${endDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}`
+        }
+      } catch (dateError) {
+        console.error('Error formatting campaign dates:', dateError)
+      }
+    }
 
     const data = await resend.emails.send({
       from: `IFEHL Registration <${process.env.RESEND_FROM_EMAIL}>`,
@@ -170,11 +225,15 @@ export async function sendReminderEmail(
         bankName: campaignData?.payment_bank,
         contactPhone: campaignData?.contact_phone,
         paymentInstructions: campaignData?.payment_instructions,
+        logoUrl: campaignData?.logo_image_url || campaignData?.banner_image_url,
       }),
     });
 
-    // Track that the email was sent
-    await trackEmailSent(parseInt(registrationId), 'reminder');
+    // Track that the email was sent (skip for test IDs)
+    const numericId = parseInt(registrationId);
+    if (!isNaN(numericId)) {
+      await trackEmailSent(numericId, 'reminder');
+    }
 
     return { success: true, data };
   } catch (error) {

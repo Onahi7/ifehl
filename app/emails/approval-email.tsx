@@ -13,6 +13,7 @@ interface ApprovalEmailProps {
   contactPhone?: string;
   paymentDeadline?: string;
   paymentInstructions?: string;
+  logoUrl?: string;
 }
 
 export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
@@ -28,6 +29,7 @@ export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
   contactPhone = '08091533339',
   paymentDeadline = 'October 31st, 2025',
   paymentInstructions,
+  logoUrl,
 }) => (
   <div style={{
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
@@ -42,7 +44,7 @@ export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
       marginBottom: '20px',
     }}>
       <img 
-        src="https://ifehl.cmdanigeria.org/IfHEL.%20Logo.png" 
+        src={logoUrl || 'https://ifehl.cmdanigeria.org/IfHEL.%20Logo.png'} 
         alt="IFEHL Logo" 
         style={{
           maxWidth: '150px',
