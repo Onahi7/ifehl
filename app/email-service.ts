@@ -14,12 +14,27 @@ export async function sendConfirmationEmail(
   firstName: string, 
   registrationId: string, 
   fullName: string,
-  campaignTitle?: string
+  campaignData?: {
+    title: string
+    start_date: string
+    end_date: string
+    location: string
+    registration_fee: number
+    payment_account_name?: string
+    payment_account_number?: string
+    payment_bank?: string
+    contact_phone?: string
+    payment_instructions?: string
+  }
 ) {
   try {
-    const emailSubject = campaignTitle 
-      ? `Registration Confirmation - ${campaignTitle}`
+    const emailSubject = campaignData?.title 
+      ? `Registration Confirmation - ${campaignData.title}`
       : 'Registration Confirmation - IFEHL 2025'
+
+    const campaignDates = campaignData ? 
+      `${new Date(campaignData.start_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long' })} - ${new Date(campaignData.end_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}` :
+      undefined
       
     const data = await resend.emails.send({
       from: `IFEHL Registration <${process.env.RESEND_FROM_EMAIL}>`,
@@ -30,7 +45,15 @@ export async function sendConfirmationEmail(
         registrationId,
         fullName,
         email: to,
-        campaignTitle: campaignTitle || 'IFEHL 2025',
+        campaignTitle: campaignData?.title || 'IFEHL 2025',
+        campaignDates,
+        campaignVenue: campaignData?.location,
+        registrationFee: campaignData?.registration_fee,
+        accountName: campaignData?.payment_account_name,
+        accountNumber: campaignData?.payment_account_number,
+        bankName: campaignData?.payment_bank,
+        contactPhone: campaignData?.contact_phone,
+        paymentInstructions: campaignData?.payment_instructions,
       }),
     });
 
@@ -58,6 +81,8 @@ export async function sendApprovalEmail(
     payment_account_number?: string
     payment_bank?: string
     contact_phone?: string
+    payment_instructions?: string
+    registration_deadline?: string
   }
 ) {
   try {
@@ -67,6 +92,10 @@ export async function sendApprovalEmail(
 
     const campaignDates = campaignData ? 
       `${new Date(campaignData.start_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long' })} - ${new Date(campaignData.end_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}` :
+      undefined
+
+    const paymentDeadline = campaignData?.registration_deadline ? 
+      new Date(campaignData.registration_deadline).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) :
       undefined
 
     const data = await resend.emails.send({
@@ -84,6 +113,8 @@ export async function sendApprovalEmail(
         accountNumber: campaignData?.payment_account_number,
         bankName: campaignData?.payment_bank,
         contactPhone: campaignData?.contact_phone,
+        paymentDeadline,
+        paymentInstructions: campaignData?.payment_instructions,
       }),
     });
 
@@ -111,6 +142,7 @@ export async function sendReminderEmail(
     payment_account_number?: string
     payment_bank?: string
     contact_phone?: string
+    payment_instructions?: string
   }
 ) {
   try {
@@ -137,6 +169,7 @@ export async function sendReminderEmail(
         accountNumber: campaignData?.payment_account_number,
         bankName: campaignData?.payment_bank,
         contactPhone: campaignData?.contact_phone,
+        paymentInstructions: campaignData?.payment_instructions,
       }),
     });
 

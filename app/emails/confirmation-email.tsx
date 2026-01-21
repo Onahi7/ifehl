@@ -6,6 +6,14 @@ interface ConfirmationEmailProps {
   fullName: string;
   email: string;
   campaignTitle?: string;
+  campaignDates?: string;
+  campaignVenue?: string;
+  registrationFee?: number;
+  accountName?: string;
+  accountNumber?: string;
+  bankName?: string;
+  contactPhone?: string;
+  paymentInstructions?: string;
 }
 
 export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
@@ -14,6 +22,14 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
   fullName,
   email,
   campaignTitle = 'IFEHL 2025',
+  campaignDates = '16-23rd November, 2025',
+  campaignVenue = 'Wholeness House, Gwagalada, Abuja',
+  registrationFee = 50000,
+  accountName = 'Christian Medical and Dental Association of Nigeria',
+  accountNumber = '1018339742',
+  bankName = 'UBA',
+  contactPhone = '08091533339',
+  paymentInstructions,
 }) => (
   <div style={{ 
     fontFamily: 'Arial, sans-serif', 
@@ -139,16 +155,16 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
         </h3>
         <div style={{ color: '#78350f', lineHeight: '1.8' }}>
           <p style={{ margin: '5px 0' }}>
-            <strong>📅 Date:</strong> 16-23rd November, 2025
+            <strong>📅 Date:</strong> {campaignDates}
           </p>
           <p style={{ margin: '5px 0' }}>
-            <strong>📍 Venue:</strong> Wholeness House, Gwagalada, Abuja
+            <strong>📍 Venue:</strong> {campaignVenue}
           </p>
           <p style={{ margin: '5px 0' }}>
-            <strong>💰 Registration Fee:</strong> ₦50,000
+            <strong>💰 Registration Fee:</strong> ₦{registrationFee.toLocaleString()}
           </p>
           <p style={{ margin: '5px 0' }}>
-            <strong>📞 Contact:</strong> 08091533339
+            <strong>📞 Contact:</strong> {contactPhone}
           </p>
         </div>
       </div>
@@ -169,7 +185,7 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
           ⚠️ Important: Complete Your Payment
         </h3>
         <p style={{ color: '#991b1b', lineHeight: '1.6', marginBottom: '15px' }}>
-          Your registration is <strong>not complete</strong> until payment is made. Please transfer ₦50,000 to:
+          Your registration is <strong>not complete</strong> until payment is made. Please transfer ₦{registrationFee.toLocaleString()} to:
         </p>
         <div style={{ 
           backgroundColor: 'white', 
@@ -178,23 +194,25 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
           color: '#374151'
         }}>
           <p style={{ margin: '5px 0' }}>
-            <strong>Account Name:</strong> Christian Medical and Dental Association of Nigeria
+            <strong>Account Name:</strong> {accountName}
           </p>
           <p style={{ margin: '5px 0' }}>
-            <strong>Account Number:</strong> 1018339742
+            <strong>Account Number:</strong> {accountNumber}
           </p>
           <p style={{ margin: '5px 0' }}>
-            <strong>Bank:</strong> UBA
+            <strong>Bank:</strong> {bankName}
           </p>
         </div>
-        <p style={{ 
-          color: '#991b1b', 
-          fontSize: '14px', 
-          marginTop: '15px',
-          fontWeight: 'bold'
-        }}>
-          ⚠️ Transfer Instruction: Add "IFEHL 2025(03)" to the narration when making transfer for registration.
-        </p>
+        {paymentInstructions && (
+          <p style={{ 
+            color: '#991b1b', 
+            fontSize: '14px', 
+            marginTop: '15px',
+            fontWeight: 'bold'
+          }}>
+            ⚠️ Transfer Instruction: {paymentInstructions}
+          </p>
+        )}
         <p style={{ 
           color: '#991b1b', 
           fontSize: '14px', 
@@ -262,7 +280,7 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
 
       <p style={{ color: '#4b5563', lineHeight: '1.6', marginBottom: '20px' }}>
         If you have any questions or concerns, please don't hesitate to contact us at 
-        <strong> 08091533339</strong> or email us at 
+        <strong> {contactPhone}</strong> or email us at 
         <strong> office@cmdanigeria.org</strong>.
       </p>
 

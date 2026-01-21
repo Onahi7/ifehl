@@ -11,6 +11,8 @@ interface ApprovalEmailProps {
   accountNumber?: string;
   bankName?: string;
   contactPhone?: string;
+  paymentDeadline?: string;
+  paymentInstructions?: string;
 }
 
 export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
@@ -24,6 +26,8 @@ export const ApprovalEmail: React.FC<ApprovalEmailProps> = ({
   accountNumber = '1018339742',
   bankName = 'UBA',
   contactPhone = '08091533339',
+  paymentDeadline = 'October 31st, 2025',
+  paymentInstructions,
 }) => (
   <div style={{
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',

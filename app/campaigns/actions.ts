@@ -484,7 +484,18 @@ export async function submitCampaignRegistration(campaignId: number, formData: R
         formData.firstName,
         registrationId.toString(),
         fullName,
-        campaign[0].title
+        {
+          title: campaign[0].title,
+          start_date: campaign[0].start_date,
+          end_date: campaign[0].end_date,
+          location: campaign[0].location,
+          registration_fee: campaign[0].registration_fee,
+          payment_account_name: campaign[0].payment_account_name,
+          payment_account_number: campaign[0].payment_account_number,
+          payment_bank: campaign[0].payment_bank,
+          contact_phone: campaign[0].contact_phone,
+          payment_instructions: campaign[0].payment_instructions,
+        }
       )
     } catch (emailError) {
       console.error("Error sending confirmation email:", emailError)

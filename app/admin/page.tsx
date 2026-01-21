@@ -110,6 +110,8 @@ export default function AdminPage() {
               payment_account_number: campaign.payment_account_number,
               payment_bank: campaign.payment_bank,
               contact_phone: campaign.contact_phone,
+              payment_instructions: campaign.payment_instructions,
+              registration_deadline: campaign.registration_deadline,
             }
           }
         }

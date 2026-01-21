@@ -11,6 +11,7 @@ interface ReminderEmailProps {
   accountNumber?: string;
   bankName?: string;
   contactPhone?: string;
+  paymentInstructions?: string;
 }
 
 export const ReminderEmail: React.FC<ReminderEmailProps> = ({
@@ -24,6 +25,7 @@ export const ReminderEmail: React.FC<ReminderEmailProps> = ({
   accountNumber = '1018339742',
   bankName = 'UBA',
   contactPhone = '08091533339',
+  paymentInstructions,
 }) => (
   <div style={{
     fontFamily: 'Arial, sans-serif',
@@ -109,29 +111,31 @@ export const ReminderEmail: React.FC<ReminderEmailProps> = ({
           </p>
         </div>
         
-        <div style={{
-          backgroundColor: '#fee2e2',
-          padding: '15px',
-          borderRadius: '6px',
-          border: '1px solid #ef4444',
-        }}>
-          <p style={{ 
-            margin: '0',
-            fontSize: '14px',
-            color: '#991b1b',
-            fontWeight: 'bold'
+        {paymentInstructions && (
+          <div style={{
+            backgroundColor: '#fee2e2',
+            padding: '15px',
+            borderRadius: '6px',
+            border: '1px solid #ef4444',
           }}>
-            ⚠️ Transfer Instruction: Add "{campaignTitle}" to the narration when making your transfer.
-          </p>
-          <p style={{ 
-            margin: '10px 0 0 0',
-            fontSize: '14px',
-            color: '#991b1b',
-            fontStyle: 'italic'
-          }}>
-            Use your Registration ID ({registrationId}) as the payment reference.
-          </p>
-        </div>
+            <p style={{ 
+              margin: '0',
+              fontSize: '14px',
+              color: '#991b1b',
+              fontWeight: 'bold'
+            }}>
+              ⚠️ Transfer Instruction: {paymentInstructions}
+            </p>
+            <p style={{ 
+              margin: '10px 0 0 0',
+              fontSize: '14px',
+              color: '#991b1b',
+              fontStyle: 'italic'
+            }}>
+              Use your Registration ID ({registrationId}) as the payment reference.
+            </p>
+          </div>
+        )}
       </div>
       
       {/* Event Details */}
