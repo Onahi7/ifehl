@@ -201,7 +201,7 @@ export default function CampaignPage({ params }: { params: Promise<{ slug: strin
   }
 
   if (showSuccess && submitResult?.registrationId) {
-    const whatsappGroupLink = "https://chat.whatsapp.com/IBx6CvdfUMdAmg59agv6Gd"
+    const whatsappGroupLink = "https://chat.whatsapp.com/DA2iIYHr332EMknkfoWyIr?mode=gi_t"
     const whatsappContactNumber = campaign.contact_phone || "08091533339"
     const fullName = `${formData.firstName} ${formData.middleName} ${formData.lastName}`.replace(/\s+/g, ' ').trim()
     

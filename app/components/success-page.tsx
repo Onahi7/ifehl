@@ -88,7 +88,7 @@ export default function SuccessPage({ registrationId, participantName, email, on
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="https://chat.whatsapp.com/IBx6CvdfUMdAmg59agv6Gd"
+            href="https://chat.whatsapp.com/DA2iIYHr332EMknkfoWyIr?mode=gi_t"
             target="_blank" 
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors"

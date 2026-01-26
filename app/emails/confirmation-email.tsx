@@ -255,7 +255,7 @@ export const ConfirmationEmail: React.FC<ConfirmationEmailProps> = ({
         marginBottom: '25px' 
       }}>
         <a 
-          href="https://chat.whatsapp.com/IBx6CvdfUMdAmg59agv6Gd"
+          href="https://chat.whatsapp.com/DA2iIYHr332EMknkfoWyIr?mode=gi_t"
           style={{
             display: 'inline-block',
             backgroundColor: '#25D366',
