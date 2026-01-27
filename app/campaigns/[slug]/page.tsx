@@ -366,15 +366,15 @@ export default function CampaignPage({ params }: { params: Promise<{ slug: strin
       {/* Banner */}
       <div className="relative w-full bg-gradient-to-r from-gray-500 via-purple-800 to-green-800">
         {campaign.banner_image_url ? (
-          <div className="relative w-full">
+          <div className="relative w-full aspect-[4/5] sm:aspect-[3/4] md:aspect-[16/9] lg:aspect-[21/9]">
             <img 
               src={campaign.banner_image_url} 
               alt={campaign.title}
-              className="w-full h-auto object-contain max-h-[600px] md:max-h-[800px]"
+              className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-white">
-              <h2 className="text-3xl md:text-4xl font-bold px-4 text-center">{campaign.title}</h2>
-              {campaign.subtitle && <p className="text-lg md:text-xl mt-2 opacity-90 px-4 text-center">{campaign.subtitle}</p>}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent flex flex-col items-center justify-center text-white px-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center drop-shadow-lg">{campaign.title}</h2>
+              {campaign.subtitle && <p className="text-base sm:text-lg md:text-xl lg:text-2xl mt-2 opacity-90 text-center drop-shadow-md max-w-3xl">{campaign.subtitle}</p>}
             </div>
           </div>
         ) : (
