@@ -105,7 +105,7 @@ export default function ImageUpload({
   const getPlaceholderSize = () => {
     switch (imageType) {
       case "banner":
-        return "aspect-[3/1] max-h-48"
+        return "aspect-[4/5] max-h-64"
       case "logo":
         return "aspect-square max-h-32"
       default:
@@ -116,7 +116,7 @@ export default function ImageUpload({
   const getLabel = () => {
     switch (imageType) {
       case "banner":
-        return "Banner Image (Recommended: 1200x400px)"
+        return "Banner Image (Recommended: 1080x1350px)"
       case "logo":
         return "Logo (Recommended: 200x200px)"
       default:

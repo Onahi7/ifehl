@@ -366,11 +366,11 @@ export default function CampaignPage({ params }: { params: Promise<{ slug: strin
       {/* Banner */}
       <div className="relative w-full bg-gradient-to-r from-gray-500 via-purple-800 to-green-800">
         {campaign.banner_image_url ? (
-          <div className="relative w-full h-48 md:h-64 lg:h-80">
+          <div className="relative w-full">
             <img 
               src={campaign.banner_image_url} 
               alt={campaign.title}
-              className="w-full h-full object-cover"
+              className="w-full h-auto object-contain max-h-[600px] md:max-h-[800px]"
             />
             <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-white">
               <h2 className="text-3xl md:text-4xl font-bold px-4 text-center">{campaign.title}</h2>
